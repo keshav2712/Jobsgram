@@ -27,19 +27,18 @@ const validateJobInput = require("../validation/job");
 router.post("/users/register", (req, res) => {
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
-
   // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ username: req.body.username }).then(user => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
+      return res.status(400).json({ username: "Username already exists" });
     } else {
       const newUser = new User({
         name: req.body.name,
-        email: req.body.email,
+        username: req.body.username,
         password: req.body.password,
         role: req.body.role
       });
@@ -72,14 +71,14 @@ router.post("/users/login", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const email = req.body.email;
+  const username = req.body.username;
   const password = req.body.password;
 
-  // Find user by email
-  User.findOne({ email }).then(user => {
+  // Find user by username
+  User.findOne({ username }).then(user => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ usernamenotfound: "username not found" });
     }
 
     // Check password
@@ -96,13 +95,11 @@ router.post("/users/login", (req, res) => {
         jwt.sign(
           payload,
           keys.secretOrKey,
-          {
-            expiresIn: 31556926 // 1 year in seconds
-          },
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
+              user: user,
             });
           }
         );
@@ -115,10 +112,21 @@ router.post("/users/login", (req, res) => {
   });
 });
 
+//getting a single user by id
+router.get('/users/view', (req, res) => {
+  console.log(req.body)
+    User.findOne({ _id: req.body.id })
+      .then(user => {
+         res.json(user)
+      })
+      .catch(err => res.status(400).json(err));
+});
+
+
 //Jobs
 router.route('/jobs').get((req, res) => {
     Job.find()
-      .then(obs => res.json(jobs))
+      .then(jobs => res.json(jobs))
       .catch(err => res.status(400).json(err));
 });
 

@@ -3,8 +3,7 @@ import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import {
   GET_ERRORS,
-  SET_CURRENT_USER,
-  USER_LOADING
+  SET_CURRENT_USER
 } from "./types";
 // Register User
 export const registerUser = (userData, history) => dispatch => {
@@ -20,20 +19,19 @@ export const registerUser = (userData, history) => dispatch => {
 };
 // Login - get user token
 export const loginUser = userData => dispatch => {
-  console.log(userData);
   axios
     .post("/api/users/login", userData)
     .then(res => {
-      // Save to localStorage
-// Set token to localStorage
-      const { token } = res.data;
+      // Set token to localStorage
+      const { token, user } = res.data;
       localStorage.setItem("jwtToken", token);
+      localStorage.setItem("user", JSON.stringify(user));
       // Set token to Auth header
       setAuthToken(token);
       // Decode token to get user data
       const decoded = jwt_decode(token);
       // Set current user
-      dispatch(setCurrentUser(decoded));
+      dispatch(setCurrentUser(decoded, user));
     })
     .catch(err =>
       dispatch({
@@ -43,24 +41,19 @@ export const loginUser = userData => dispatch => {
     );
 };
 // Set logged in user
-export const setCurrentUser = decoded => {
+export const setCurrentUser = (decoded, user) => {
   return {
     type: SET_CURRENT_USER,
-    payload: decoded
-  };
-};
-// User loading
-export const setUserLoading = () => {
-  return {
-    type: USER_LOADING
+    payload: {decoded, user}
   };
 };
 // Log user out
 export const logoutUser = () => dispatch => {
   // Remove token from local storage
   localStorage.removeItem("jwtToken");
+  localStorage.removeItem("user");
   // Remove auth header for future requests
   setAuthToken(false);
   // Set current user to empty object {} which will set isAuthenticated to false
-  dispatch(setCurrentUser({}));
+  dispatch(setCurrentUser({},{}));
 };

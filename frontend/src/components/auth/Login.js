@@ -10,7 +10,7 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      email: "",
+      username: "",
       password: "",
       errors: {}
     };
@@ -31,7 +31,7 @@ onChange = e => {
 onSubmit = e => {
     e.preventDefault();
     const userData = {
-          email: this.state.email,
+          username: this.state.username,
           password: this.state.password
         };
     this.props.loginUser(userData);
@@ -57,18 +57,18 @@ return (
                 <div className="input-field col s12">
                   <input
                     onChange={this.onChange}
-                    value={this.state.email}
-                    error={errors.email}
-                    id="email"
-                    type="email"
+                    value={this.state.username}
+                    error={errors.username}
+                    id="username"
+                    type="text"
                     className={classnames("", {
-                      invalid: errors.email || errors.emailnotfound
+                      invalid: errors.username || errors.usernamenotfound
                     })}
                   />
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="username">Username</label>
                   <span className="red-text">
-                    {errors.email}
-                    {errors.emailnotfound}
+                    {errors.username}
+                    {errors.usernamenotfound}
                   </span>
                 </div>
                 <div className="input-field col s12">

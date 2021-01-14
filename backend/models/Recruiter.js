@@ -14,15 +14,9 @@ const RecruiterSchema = new Schema({
     type: Number,
     required: true
   },
-  education: [{
-    institutionName: String,
-    startYear: Date,
-    endYear: Date
-  }],
-  skills: [String],
-  rating: {
-    type: Number,
-    required: true
-  },
+  bio: {
+    type:  String,
+    required:  true
+  }
 });
 module.exports = Recruiter = mongoose.model("recruiters", RecruiterSchema);

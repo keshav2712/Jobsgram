@@ -3,16 +3,24 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import NavbarLogged from '../layout/NavbarLogged'
+import Jobs from './Jobs'
 
 class Dashboard extends Component {
+  constructor() {
+    super();
+    this.state = {
+      user: {}
+    };
+  }
 render() {
-    const { user } = this.props.auth;
+    const { user } = this.props.auth.user;
 return (
       <React.Fragment>
         <NavbarLogged user={this}/>
         <div className="container" >
           <div className="row">
             <div className="col s12 center-align">
+            <Jobs/>
             </div>
           </div>
         </div>

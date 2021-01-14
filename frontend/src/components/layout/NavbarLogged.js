@@ -10,7 +10,7 @@ onLogoutClick = e => {
   };
 
 onProfile = e => {
-    console.log()
+    console.log(this.props.user.props.auth.user.user)
 }
   render() {
     return (
