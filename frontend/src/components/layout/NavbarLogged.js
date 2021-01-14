@@ -16,12 +16,13 @@ onProfile = e => {
     return (
       <div className="Logged-fixed">
         <nav className="z-depth-0">
-          <div className="nav-wrapper black">
+          <div className="nav-wrapper" style = {{backgroundColor: '#2E284C'}}>
             <div
               style={{
-                fontFamily: "monospace"
+                fontFamily: "monospace",
+                fontColor: '#F0F1F7'
               }}
-              className="col s5 brand-logo center white-text"
+              className="col s5 brand-logo center"
             >
               <i className="material-icons">work</i>
               JOBSGRAM
@@ -32,9 +33,10 @@ onProfile = e => {
                   width: "100px",
                   borderRadius: "3px",
                   letterSpacing: "1.5px",
+                  backgroundColor: '#2E284C'
                 }}
                 onClick={this.onProfile}
-                className="btn btn-medium waves-effect waves-light hoverable black"
+                className="btn btn-medium"
               >
                 Profile
               </button>
@@ -45,9 +47,10 @@ onProfile = e => {
                   width: "100px",
                   borderRadius: "3px",
                   letterSpacing: "1.5px",
+                  backgroundColor: '#2E284C'
                 }}
                 onClick={this.onLogoutClick}
-                className="btn btn-medium waves-effect waves-light hoverable black"
+                className="btn btn-medium"
               >
                 Logout
               </button>

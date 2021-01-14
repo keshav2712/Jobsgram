@@ -24,7 +24,10 @@ export default class Jobs extends Component {
         );
         return (
             <div>
-                <h1 className="grey-text text-darken-2">Job Listings Available</h1>
+                <h4 className="grey-text text-darken-4 header left-align" 
+                    style={{fontFamily: "Bodoni Moda", padding: "20px 0px"}}>
+                    JOB LISTING AVAILABLE
+                </h4>
                 {jobItems}
             </div>
         )

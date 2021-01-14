@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import classnames from "classnames";
 import Navbar from "./../layout/Navbar";
+import './../../index.css';
 
 class Login extends Component {
   constructor() {
@@ -97,7 +98,7 @@ return (
                       marginTop: "1rem"
                     }}
                     type="submit"
-                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                    className="btn button btn-large waves-effect waves-light hoverable"
                   >
                     Login
                   </button>

@@ -4,7 +4,7 @@ class Navbar extends Component {
     return (
       <div className="navbar-fixed">
         <nav className="z-depth-0">
-          <div className="nav-wrapper black">
+          <div className="nav-wrapper" style = {{backgroundColor: '#2E284C'}}>
             <div
               style={{
                 fontFamily: "monospace"
