@@ -8,8 +8,8 @@ const JobSchema = new Schema({
     required: true
   },
   recruiter: {
-    type: Schema.Types.ObjectId, 
-    ref: 'Recruiter'
+    name: String,
+    email: String,
   },
   applications: {
     type: Number,

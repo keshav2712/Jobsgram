@@ -17,7 +17,7 @@ module.exports = function validateJobInput(data) {
   if (data.positions === 0){
       errors.positions = "Number of positions cant be 0";
   }
-  if (data.deadline < Date.now){
+  if (data.deadline > Date.now){
       errors.deadline = "Deadline already passed";
   }
   if (data.typeOfJob != 'Full-time' && data.typeOfJob != 'Part-Time' && data.typeOfJob != 'Work from Home'){

@@ -155,4 +155,22 @@ router.post("/jobs/add", (req, res) => {
             .catch(err => console.log(err));
 });
 
+router.post("/jobs/update", (req, res) => {
+  const { errors, isValid } = validateJobInput(req.body);
+
+  // Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  Job.findOne({ _id: req.body.id }).then(job => {
+      job.applications = req.body.applications;
+      job.positions = req.body.positions;
+      job.deadline = req.body.deadline;
+      job
+            .save()
+            .then(job => res.json(job))
+            .catch(err => console.log(err));
+  });
+});
+
 module.exports = router;
