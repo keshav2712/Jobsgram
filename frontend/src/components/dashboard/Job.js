@@ -18,6 +18,7 @@ function Job(props){
                     <p className="left-align"><b>Recruiter:</b> {job.recruiter}</p>
                     <p className="left-align"><b>Salary:</b> Rs {job.salary}/month</p>
                     <p className="left-align"><b>Duration:</b> {job.duration} months</p>
+                    <p className="left-align"><b>Type:</b> {job.typeOfJob}</p>
                     <p className="left-align"><b>Deadline:</b> {job.deadline.split('T')[0]} at {job.deadline.split('T')[1].split('.')[0]}</p>
                   </div>
                 </div>
