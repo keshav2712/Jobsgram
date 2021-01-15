@@ -15,3 +15,9 @@ code {
 .button {
     background-color: #5C74EC;
 }
+.switch label input[type=checkbox]:checked+.lever {
+  background-color: #5C74EC;
+}
+.switch label input[type=checkbox]:checked+.lever:after {
+  background-color: #2E284C;
+}
