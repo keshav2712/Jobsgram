@@ -17,7 +17,7 @@ render() {
 return (
       <React.Fragment>
         <NavbarLogged user={this}/>
-        <div className="container" >
+        <div className="container" style={{width: '80%'}} >
           <div className="row">
             <div className="col s12 center-align">
             <Jobs/>
