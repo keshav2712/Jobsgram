@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
 import Navbar from "./../layout/Navbar";
+import './../../index.css';
 
 class Register extends Component {
   constructor() {
@@ -13,7 +14,7 @@ class Register extends Component {
       username: "",
       password: "",
       password2: "",
-      role: "Applicant",
+      role: "applicants",
       errors: {},
     };
   }
@@ -41,7 +42,6 @@ const newUser = {
       password2: this.state.password2,
       role: this.state.role
     };
-  console.log(newUser);
   this.props.registerUser(newUser, this.props.history); 
 
   };
@@ -51,7 +51,7 @@ render() {
 return (
       <React.Fragment>
         <Navbar/>
-        <div className="container">
+        <div style={{ height: "90vh" }} className="container valign-wrapper">
           <div className="row">
             <div className="col s8 offset-s2">
               <div className="col s12">
@@ -70,7 +70,7 @@ return (
                       className="with-gap" 
                       name="role" 
                       type="radio" 
-                      value='Applicant'
+                      value='applicants'
                       defaultChecked
                     />
                     <span className="grey-text text-darken-2">Applicant</span>
@@ -80,7 +80,7 @@ return (
                       className="with-gap" 
                       name="role" 
                       type="radio" 
-                      value='Recruiter'
+                      value='recruiters'
                     />
                     <span className="grey-text text-darken-2">Recruiter</span>
                   </label>

@@ -14,7 +14,7 @@ onProfile = e => {
 }
   render() {
     return (
-      <div className="Logged-fixed">
+      <div className="Navbar-fixed">
         <nav className="z-depth-0">
           <div className="nav-wrapper" style = {{backgroundColor: '#2E284C'}}>
             <div
@@ -38,7 +38,12 @@ onProfile = e => {
                 onClick={this.onProfile}
                 className="btn btn-medium"
               >
-                Profile
+                {/* <Link
+                  to={{
+                    pathname: "/page",
+                    data: data
+                  }}
+                /> */}
               </button>
             </div>
             <div className="right-align" style={{paddingRight: '20px'}}>

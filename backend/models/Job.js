@@ -3,13 +3,14 @@ const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 const Schema = mongoose.Schema;
 // Create Schema
 const JobSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   title: {
     type: String,
     required: true
   },
   recruiter: {
-    name: String,
-    email: String,
+    type: Schema.Types.ObjectId, 
+    ref: 'recruiters'
   },
   applications: {
     type: Number,
@@ -19,6 +20,10 @@ const JobSchema = new Schema({
     type: Number,
     required: true
   },
+  applicants: [{
+    type: Schema.Types.ObjectId, 
+    ref: 'applicants'
+  }],
   dateOfPosting: {
     type: Date,
     default: Date.now

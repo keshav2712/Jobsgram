@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const passport = require("passport");
+const mongoose = require('mongoose');
 
 const User = require("../models/User");
 const Jobs = require("../models/Job");
@@ -36,13 +37,32 @@ router.post("/users/register", (req, res) => {
     if (user) {
       return res.status(400).json({ username: "Username already exists" });
     } else {
+      let id;
+      if (req.body.role == "applicants"){
+        const newApplicant = new Applicant({
+          _id:  new mongoose.Types.ObjectId(),email: "",
+          education: [{}],
+          skills: []
+        });
+        id = newApplicant._id;
+        newApplicant.save()
+          .catch(err => console.log(err))
+      } else {
+        const newRecruiter = new Recruiter({
+          _id:  new mongoose.Types.ObjectId(),
+
+        });
+        id = newRecruiter._id;
+        newRecruiter.save()
+          .catch(err => console.log(err))
+      }
       const newUser = new User({
         name: req.body.name,
         username: req.body.username,
         password: req.body.password,
-        role: req.body.role
+        role: req.body.role,
+        userId: id
       });
-
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -80,7 +100,6 @@ router.post("/users/login", (req, res) => {
     if (!user) {
       return res.status(404).json({ usernamenotfound: "username not found" });
     }
-
     // Check password
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
@@ -138,6 +157,7 @@ router.post("/jobs/add", (req, res) => {
     return res.status(400).json(errors);
   }
   const newJob = new Job({
+        _id:  new mongoose.Types.ObjectId,
         title: req.body.title,
         applications: req.body.applications,
         positions: req.body.positions,

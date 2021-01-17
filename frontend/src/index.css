@@ -13,18 +13,19 @@ code {
 }
 html {
   color: #2E284C;
+  height: 100%;
 }
-input[type=text]:not(.browser-default):focus:not([readonly])+label{
+input:not([type=submit]):not(.browser-default):focus:not([readonly])+label{
   color: #2E284C;
 }
-input[type=text]:not(.browser-default):focus:not([readonly]){
+input:not([type=submit]):not(.browser-default):focus:not([readonly]){
   border-bottom: 1px solid #2E284C;
   box-shadow: 0 1px 0 0 #2E284C;
 }
 .input-field .prefix.active {
   color: #2E284C;
 }
-.button {
+.button, .btn {
     background-color: #5C74EC;
 }
 .switch label input[type=checkbox]:checked+.lever {
@@ -41,4 +42,7 @@ input[type=text]:not(.browser-default):focus:not([readonly]){
 }
 [type="radio"].with-gap:checked+span:before {
   border: 2px solid #5C74EC
+}
+.dropdown:hover .dropdown-content{
+  display: block;
 }

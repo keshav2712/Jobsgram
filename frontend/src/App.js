@@ -9,6 +9,8 @@ import store from "./store";
 
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import DetailsA from "./components/auth/DetailsA";
+import DetailsR from "./components/auth/DetailsA";
 
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -34,12 +36,15 @@ class App extends Component {
             <Route exact path="/" component={Register} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/detailsa" component={DetailsA} />
+            <Route exact path="/detailsr" component={DetailsR} />
+            {/* <Route exact path="/profile" component={Profile} /> */}
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
-             </Switch>  
+            </Switch>
           </div>
-      </Router>
-    </Provider>  
+        </Router>
+      </Provider>
     );
   }
 }

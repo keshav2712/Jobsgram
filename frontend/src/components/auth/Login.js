@@ -43,10 +43,10 @@ render() {
 return (
       <React.Fragment>
         <Navbar/>
-        <div className="container">
+        <div style={{ height: "80vh" }} className="container valign-wrapper">
           <div className="row">
             <div className="col s8 offset-s2">
-              <div className="col s12" style={{marginTop: '50px'}}>
+              <div className="col s12">
                 <h4>
                   <b>Login</b>
                 </h4>

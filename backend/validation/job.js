@@ -29,6 +29,9 @@ module.exports = function validateJobInput(data) {
   if (data.duration < 0){
       errors.duration = "Duration of job cannot be less than 0 months";
   }
+  if (data.salary < 0){
+      errors.duration = "Salary of job cannot be negative";
+  }
   return {
     errors,
     isValid: isEmpty(errors)

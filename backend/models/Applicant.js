@@ -2,30 +2,24 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 // Create Schema
 const ApplicantSchema = new Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  number: {
-    type: Number,
-    required: true
-  },
+  _id: Schema.Types.ObjectId,
+  name: String,
+  email: String,
+  number: Number,
   education: [{
       institutionName: String,
       startYear: Date,
       endYear: Date
   }],
-  skills: {
-    type: [String],
-    required: true
-  },
-  rating: {
-    type: Number,
-    required: true
-  },
+  skills: [String],
+  rating: Number,
+  jobs: [{
+    job:{
+      type: Schema.Types.ObjectId, 
+      ref: 'jobs'
+    },
+    status: String,
+    sop: String,
+  }]
 });
 module.exports = Applicant = mongoose.model("applicants", ApplicantSchema);

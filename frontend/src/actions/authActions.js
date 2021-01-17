@@ -7,9 +7,16 @@ import {
 } from "./types";
 // Register User
 export const registerUser = (userData, history) => dispatch => {
+  console.log(userData.role)
   axios
     .post("/api/users/register", userData)
-    .then(res => history.push("/login")) // re-direct to login on successful register
+    .then(res => {
+        if(userData.role == "applicants"){
+          history.push({pathname: "/detailsa", state: {detail: [res.data,userData]}})
+        } else {
+          history.push({pathname: "/detailsr", state: {detail: [res.data,userData]}})
+        }
+      }) // re-direct to login on successful register
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -19,6 +26,7 @@ export const registerUser = (userData, history) => dispatch => {
 };
 // Login - get user token
 export const loginUser = userData => dispatch => {
+  console.log(userData)
   axios
     .post("/api/users/login", userData)
     .then(res => {
