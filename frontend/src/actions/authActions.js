@@ -7,7 +7,6 @@ import {
 } from "./types";
 // Register User
 export const registerUser = (userData, history) => dispatch => {
-  console.log(userData.role)
   axios
     .post("/api/users/register", userData)
     .then(res => {

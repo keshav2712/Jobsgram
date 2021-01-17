@@ -38,12 +38,14 @@ onProfile = e => {
                 onClick={this.onProfile}
                 className="btn btn-medium"
               >
-                {/* <Link
-                  to={{
-                    pathname: "/page",
-                    data: data
-                  }}
-                /> */}
+                <Link
+                  // to={{
+                  //   pathname: "/page",
+                  //   data: data
+                  // }}
+                >
+                Profile
+                </Link>
               </button>
             </div>
             <div className="right-align" style={{paddingRight: '20px'}}>

@@ -13,7 +13,7 @@ function Job(props){
                     className="card-title left-align"
                     style={{ fontSize: "22px" }}
                     >
-                    <b>Job Title:</b> &emsp;{job.title}
+                    <b>Job Title:</b> {job.title}
                     </span>
                     <p className="left-align"><b>Recruiter:</b> {job.recruiter}</p>
                     <p className="left-align"><b>Salary:</b> Rs {job.salary}/month</p>

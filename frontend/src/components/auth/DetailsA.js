@@ -6,6 +6,7 @@ import { loginUser } from "../../actions/authActions";
 import classnames from "classnames";
 import Navbar from "./../layout/Navbar";
 import './../../index.css';
+import {saveUser} from '../../utils/saveUser'
 import CreatableSelect from 'react-select/creatable';
 
 const skills = [
@@ -50,7 +51,12 @@ class DetailsA extends Component {
       });
     }
   }
-
+  componentDidMount() {
+    // If logged in and user navigates to Register page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
   handleValidation(){
       let errors = {
         education: [{}],
@@ -197,12 +203,15 @@ class DetailsA extends Component {
     e.preventDefault();
     if(this.handleValidation()){
       const userData = {
+            id: this.props.location.state.detail[0].userId,
             name: this.state.name,
             email: this.state.email,
+            number: this.state.number,
             education: this.state.education,
-            skills: this.state.skills
+            skills: this.state.skills,
+            role: this.props.location.state.detail[0].role
           };
-      console.log(this.props.location.state.detail)
+      saveUser(userData);
       this.props.loginUser(this.props.location.state.detail[1])
     }
   };

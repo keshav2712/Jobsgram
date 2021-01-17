@@ -142,13 +142,62 @@ router.get('/users/view', (req, res) => {
 });
 
 
+//Applicant
+router.route('/applicant/save').post((req, res) => {
+    Applicant.findOne({ _id: req.body.id }).then(applicant => {
+      applicant.name = req.body.name;
+      applicant.email = req.body.email;
+      applicant.number = req.body.number;
+      applicant.education = req.body.education;
+      applicant.skills = req.body.skills;
+      applicant
+            .save()
+            .then(applicant => res.json(applicant))
+            .catch(err => res.status(400).json(err));
+    })
+});
+
+router.route('/applicant').get((req, res) => {
+   Applicant.findOne({ _id: req.body.userId }).then(applicant => {
+     if(!applicant){
+       return res.status(404).json({ notfound: "Applicant not found" });
+     }
+     else {
+       res.json(applicant);
+     }
+   }).catch(err => res.status(400).json(err));
+  });
+
+
+//Recruiter
+router.route('/recruiter/save').post((req, res) => {
+    Recruiter.findOne({ _id: req.body.id }).then(recruiter => {
+      recruiter.name = req.body.name;
+      recruiter.email = req.body.email;
+      recruiter.number = req.body.number;
+      recruiter.bio = req.body.bio;
+      recruiter
+            .save()
+            .then(recruiter => res.json(recruiter))
+            .catch(err => res.status(400).json(err));
+    })
+});
+router.route('/recruiter').get((req, res) => {
+   Recruiter.findOne({ _id: req.body.userId }).then(recruiter => {
+     if(!recruiter){
+       return res.status(404).json({ notfound: "Recruiter not found" });
+     }
+     else {
+       res.json(recruiter);
+     }
+   }).catch(err => res.status(400).json(err));
+});
 //Jobs
 router.route('/jobs').get((req, res) => {
     Job.find()
       .then(jobs => res.json(jobs))
       .catch(err => res.status(400).json(err));
-});
-
+})
 router.post("/jobs/add", (req, res) => {
   const { errors, isValid } = validateJobInput(req.body);
 
@@ -172,7 +221,7 @@ router.post("/jobs/add", (req, res) => {
       newJob
             .save()
             .then(job => res.json(job))
-            .catch(err => console.log(err));
+            .catch(err => res.status(400).json(err));
 });
 
 router.post("/jobs/update", (req, res) => {
@@ -189,7 +238,7 @@ router.post("/jobs/update", (req, res) => {
       job
             .save()
             .then(job => res.json(job))
-            .catch(err => console.log(err));
+            .catch(err => res.status(400).json(err));
   });
 });
 
