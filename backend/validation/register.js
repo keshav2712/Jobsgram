@@ -13,7 +13,9 @@ module.exports = function validateRegisterInput(data) {
   if (Validator.isEmpty(data.username)) {
     errors.username = "Username field is required";
   }
-
+  if (!data.username.match(/^[A-Za-z]+$/)) {
+    errors.username = "Username can only be alphabets";
+  }
   // Password checks
   if (Validator.isEmpty(data.password)) {
     errors.password = "Password field is required";

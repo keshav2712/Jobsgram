@@ -1,15 +1,13 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import { withRouter} from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
-import classnames from "classnames";
-import Navbar from "./../layout/Navbar";
+import { connect } from 'react-redux'
 import './../../index.css';
 import {saveUser} from '../../utils/saveUser'
+import classnames from "classnames";
+import axios from "axios";
 
-class DetailsR extends Component {
-  constructor() {
+export class ProfileR extends Component {
+    constructor() {
     super();
     this.state = {
       name: "",
@@ -17,25 +15,27 @@ class DetailsR extends Component {
       number: "",
       bio: "",
       errors: {},
+      disabled: true 
     };
   }
-  
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/dashboard"); // push user to dashboard when they login
-    }
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
-    }
+
+  componentDidMount(){
+    const data = this.props.location.state.detail;
+    data.userId = data._id;
+    axios
+        .post("/api/recruiter", data)
+        .then(res => 
+        this.setState({
+            id: res.data._id, 
+            name: res.data.name ? res.data.name : "",
+            email: res.data.email ? res.data.email : "",
+            number: res.data.number ? res.data.number : "",
+            bio: res.data.bio ? res.data.bio : "",
+            })
+        ) 
+        .catch(err => console.log(err));
   }
-  componentDidMount() {
-    // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
-    }
-  }
+
   handleValidation(){
       let errors = {};
       let formIsValid = true;
@@ -84,17 +84,15 @@ class DetailsR extends Component {
   onSubmit = e => {
     e.preventDefault();
     if(this.handleValidation()){
+        this.setState(prevState => ({disabled: !prevState.disabled}));
       const userData = {
-            id: this.props.location.state.detail[0].userId,
+            id: this.state.id,
             name: this.state.name,
             email: this.state.email,
             number: this.state.number,
             bio: this.state.bio,
-            role: this.props.location.state.detail[0].role
           };
       saveUser(userData);
-      console.log(userData)
-      this.props.loginUser(this.props.location.state.detail[1])
     }
   };
 
@@ -102,19 +100,49 @@ render() {
     const { errors } = this.state;
 return (
       <React.Fragment>
-        <Navbar/>
+        <div className="Navbar-fixed">
+            <nav className="z-depth-0">
+            <div className="nav-wrapper" style = {{backgroundColor: '#2E284C'}}>
+            <div
+                style={{
+                fontFamily: "monospace",
+                fontColor: '#F0F1F7'
+                }}
+                className="col s5 brand-logo center"
+            >
+                <i className="material-icons">work</i>
+                JOBSGRAM
+            </div>
+            <div className="left" style={{paddingLeft: '20px'}}>
+                <button
+                style={{
+                    width: "100px",
+                    letterSpacing: "1.5px",
+                    backgroundColor: '#2E284C'
+                }}
+                onClick={this.props.history.goBack}
+                className="btn btn-medium"
+                >
+                Home
+                </button>
+            </div>
+            </div>
+            </nav>
+        </div>
         <div className="container valign-wrapper">
           <div className="row" style={{margin: '30px 0px 30px 0px', width: "100%"}}>
             <div className="col s8 offset-s2">
               <div className="col s12">
                 <h4>
-                  <b>Enter Details</b>
+                  <b>Personal Details</b>
                 </h4>
               </div>
               <form onSubmit={this.onSubmit}>
                 <div className="input-field col s12">
+                  <span style={sty}>Name</span>
                   <input
                     onChange={this.onChange}
+                    disabled = {this.state.disabled}
                     value={this.state.name}
                     error={errors.name}
                     id="name"
@@ -123,12 +151,13 @@ return (
                       invalid: errors.name
                     })}
                   />
-                  <label htmlFor="name">Name</label>
                   <span className="red-text">{errors.name}</span>
                 </div>
                 <div className="input-field col s12">
+                  <span style={sty}>E-mail</span>
                   <input
                     onChange={this.onChange}
+                    disabled = {this.state.disabled}
                     value={this.state.email}
                     error={errors.email}
                     id="email"
@@ -137,12 +166,13 @@ return (
                       invalid: errors.email
                     })}
                   />
-                  <label htmlFor="email">E-mail</label>
                   <span className="red-text">{errors.email}</span>
                 </div>
                 <div className="input-field col s12">
+                  <span style={sty}>Phone Number</span>
                   <input
                     onChange={this.onChange}
+                    disabled = {this.state.disabled}
                     value={this.state.number}
                     error={errors.number}
                     id="number"
@@ -151,12 +181,13 @@ return (
                       invalid: errors.number
                     })}
                   />
-                  <label htmlFor="number">Phone Number</label>
                   <span className="red-text">{errors.number}</span>
                 </div>
                 <div className="input-field col s12">
+                  <span style={sty}>Bio(250 char max)</span>
                   <textarea
                     onChange={this.onChange}
+                    disabled = {this.state.disabled}
                     value={this.state.bio}
                     error={errors.bio}
                     id="bio"
@@ -167,22 +198,24 @@ return (
                     })}
                     maxLength="250"
                   />
-                  <label htmlFor="number">Bio (250 char max)</label>
                   <span className="red-text">{errors.bio}</span>
                 </div>
-                <div className="col s12">
-                  <button
-                    style={{
-                      width: "100px",
-                      borderRadius: "3px",
-                      letterSpacing: "1.5px",
-                      marginTop: "10px"
-                    }}
-                    type="submit"
-                    className="btn btn-medium waves-effect waves-light hoverable button"
-                  >
-                    Submit
-                  </button>
+                <div className="row">
+                    <div className="col s2">
+                        <input 
+                            type='button' 
+                            className="btn btn-medium" 
+                            style={{
+                            borderRadius: "3px",
+                            letterSpacing: "1.5px",
+                            marginTop: "10px",
+                            height: "36px"
+                            }}
+                            type="submit"
+                            value={this.state.disabled ? "Edit" : "Save"} 
+                            onClick={(e)=> {}}
+                        />
+                    </div>
                 </div>
               </form>
             </div>
@@ -193,16 +226,13 @@ return (
   }
 }
 
-DetailsR.propTypes = {
-  loginUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-export default connect(
-  mapStateToProps,
-  { loginUser }
-)(withRouter(DetailsR));
+const sty = {
+    fontSize: "13px",
+    color: "#9e9e9e"
+}
+
+const mapStateToProps = (state) => ({
+    
+})
+
+export default connect(mapStateToProps)(withRouter(ProfileR));

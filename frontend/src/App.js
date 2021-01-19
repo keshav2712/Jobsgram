@@ -15,6 +15,9 @@ import DetailsR from "./components/auth/DetailsR";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 
+import ProfileA from "./components/tabs/ProfileA";
+import ProfileR from "./components/tabs/ProfileR";
+
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
   // Set auth token header auth
@@ -38,7 +41,8 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/detailsa" component={DetailsA} />
             <Route exact path="/detailsr" component={DetailsR} />
-            {/* <Route exact path="/profile" component={Profile} /> */}
+            <Route exact path="/profilea" component={ProfileA} />
+            <Route exact path="/profiler" component={ProfileR} />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

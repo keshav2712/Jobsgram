@@ -133,7 +133,6 @@ router.post("/users/login", (req, res) => {
 
 //getting a single user by id
 router.get('/users/view', (req, res) => {
-  console.log(req.body)
     User.findOne({ _id: req.body.id })
       .then(user => {
          res.json(user)
@@ -157,7 +156,7 @@ router.route('/applicant/save').post((req, res) => {
     })
 });
 
-router.route('/applicant').get((req, res) => {
+router.route('/applicant').post((req, res) => {
    Applicant.findOne({ _id: req.body.userId }).then(applicant => {
      if(!applicant){
        return res.status(404).json({ notfound: "Applicant not found" });
@@ -182,10 +181,10 @@ router.route('/recruiter/save').post((req, res) => {
             .catch(err => res.status(400).json(err));
     })
 });
-router.route('/recruiter').get((req, res) => {
+router.route('/recruiter').post((req, res) => {
    Recruiter.findOne({ _id: req.body.userId }).then(recruiter => {
      if(!recruiter){
-       return res.status(404).json({ notfound: "Recruiter not found" });
+       return res.status(400).json({ notfound: "Recruiter not found" });
      }
      else {
        res.json(recruiter);

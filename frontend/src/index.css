@@ -46,3 +46,6 @@ input:not([type=submit]):not(.browser-default):focus:not([readonly]){
 .dropdown:hover .dropdown-content{
   display: block;
 }
+textarea.materialize-textarea:disabled, input:not([type=submit]):not(.browser-default):disabled {
+  color: black;
+}

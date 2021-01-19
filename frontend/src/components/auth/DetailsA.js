@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link , withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
@@ -59,10 +59,12 @@ class DetailsA extends Component {
   }
   handleValidation(){
       let errors = {
-        education: [{}],
+        education: [],
       };
+      for(let i=0; i<this.state.education.length; i++){
+        errors.education.push({});
+      }
       let formIsValid = true;
-
       //Name
       if(this.state.name===""){
           formIsValid = false;
@@ -87,13 +89,12 @@ class DetailsA extends Component {
           formIsValid = false;
           errors["number"] = "Phone Number cannot be empty";
       }
-      if((this.state.number.length < 10 || this.state.number.length > 11) && this.state.number.length !=0){
+      if((this.state.number.length < 10 || this.state.number.length > 11) && this.state.number.length !==0){
           formIsValid = false;
           errors["number"] = "Invalid Phone Number";
       }
       //education
       for(let i=0;i < this.state.education.length;i++){
-        errors["education"].push({});
         if(this.state.education[i].institutionName===""){
           formIsValid = false;
           errors.education[i].institutionName = "Insitution Name cannot be empty";
@@ -134,12 +135,12 @@ class DetailsA extends Component {
                   value={el.institutionName||''} 
                   id="institutionName" 
                   className={classnames("", {
-                        invalid: errors.education[i].institutionName
+                        invalid: errors.education ? errors.education[i].institutionName : null
                       })}
                   onChange={this.handleChange.bind(this, i)}
                 />
                 <label htmlFor="institutionName">Institution Name</label>
-                <span className="red-text">{errors.education[i].institutionName}</span>
+                <span className="red-text">{errors.education ? errors.education[i].institutionName : null}</span>
             </div>
           </div>
             <div className="row" style={{marginBottom: "0px"}}>
@@ -150,11 +151,11 @@ class DetailsA extends Component {
                 id="startYear" 
                 onChange={this.handleChange.bind(this, i)}
                 className={classnames("", {
-                        invalid: errors.education[i].startYear
+                        invalid: errors.education ? errors.education[i].startYear : null
                       })}
               />
                 <label htmlFor="startYear">Start Year</label>
-                <span className="red-text">{errors.education[i].startYear}</span>
+                <span className="red-text">{ errors.education ? errors.education[i].startYear : null}</span>
             </div>
             <div className="input-field col s4 offset-s1">
                 <input
@@ -163,11 +164,11 @@ class DetailsA extends Component {
                 id="endYear" 
                 onChange={this.handleChange.bind(this, i)}
                 className={classnames("", {
-                        invalid: errors.education[i].endYear
+                        invalid: errors.education ? errors.education[i].endYear : null
                       })}
               />
                 <label htmlFor="endYear">End Year</label>
-                <span className="red-text">{errors.education[i].endYear}</span>
+                <span className="red-text">{errors.education ? errors.education[i].endYear : null}</span>
             </div>
             <div className="col s3 valign-wrapper" style={{height: '79px'}}>
               <input type='button' className="btn btn-small" style={{backgroundColor: 'red', margin: "0 auto"}} value='X' onClick={this.removeClick.bind(this, i)}/>
@@ -187,12 +188,15 @@ class DetailsA extends Component {
         startYear: "",
         endYear: "",
       }]}));
-      this.setState(prevState => ({ errors: {education: [...prevState.errors.education,{}]}}))
+    this.setState(prevState => ({ errors: {...prevState.errors, education: [...prevState.errors.education,{}]}}));
   }
   removeClick(i){
      let education = [...this.state.education];
      education.splice(i,1);
      this.setState({ education });
+     let educatione = [...this.state.errors.education];
+     educatione.splice(i,1);
+     this.setState(prevState => ({ errors: {...prevState.errors, education: educatione}}));
   }
 
   onChangeSkill = (newValue: any, actionMeta: any) => {

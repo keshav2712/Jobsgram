@@ -8,8 +8,8 @@ const ApplicantSchema = new Schema({
   number: Number,
   education: [{
       institutionName: String,
-      startYear: Date,
-      endYear: Date
+      startYear: String,
+      endYear: String
   }],
   skills: [String],
   rating: Number,

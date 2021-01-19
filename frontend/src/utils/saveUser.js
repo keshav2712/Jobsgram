@@ -14,17 +14,3 @@ export const saveUser = (userData) => {
     }
 }
 export default saveUser;
-
-export const getUser = (userData) => {
-    if(userData.role == "applicants"){
-        axios
-        .get("/api/applicant", userData.userId)
-        .then(res => res) 
-        .catch(err => console.log(err));
-    } else {
-        axios
-        .get("/api/recruiter", userData.userId)
-        .then(res => res) 
-        .catch(err => console.log(err));
-    }
-}
