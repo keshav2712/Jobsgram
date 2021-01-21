@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const saveUser = (userData) => {
-    if(userData.role == "applicants"){
+export const saveUser = async (userData) => {
+    if(userData.role === "applicants"){
         axios
         .post("/api/applicant/save", userData)
         .then(res => res) 

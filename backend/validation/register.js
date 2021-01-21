@@ -8,6 +8,7 @@ module.exports = function validateRegisterInput(data) {
   data.username = !isEmpty(data.username) ? data.username : "";
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+  data.role = !isEmpty(data.role) ? data.role : "";
 
   // username checks
   if (Validator.isEmpty(data.username)) {
@@ -15,6 +16,10 @@ module.exports = function validateRegisterInput(data) {
   }
   if (!data.username.match(/^[A-Za-z]+$/)) {
     errors.username = "Username can only be alphabets";
+  }
+  // role checks
+  if (Validator.isEmpty(data.role)) {
+    errors.role = "Please select a role";
   }
   // Password checks
   if (Validator.isEmpty(data.password)) {
@@ -32,6 +37,7 @@ module.exports = function validateRegisterInput(data) {
   if (!Validator.equals(data.password, data.password2)) {
     errors.password2 = "Passwords must match";
   }
+  
 
   return {
     errors,

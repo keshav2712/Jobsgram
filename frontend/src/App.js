@@ -17,17 +17,21 @@ import Dashboard from "./components/dashboard/Dashboard";
 
 import ProfileA from "./components/tabs/ProfileA";
 import ProfileR from "./components/tabs/ProfileR";
+import JobListings from "./components/recruiter/JobListings";
+import Applications from "./components/recruiter/Applications";
+import EditJob from "./components/recruiter/EditJob";
+import MyApplication from "./components/applicant/MyApplication";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
   // Set auth token header auth
   const token = localStorage.jwtToken;
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
   setAuthToken(token);
   // Decode token and get user info and exp
   const decoded = jwt_decode(token);
   // Set user and isAuthenticated
-  store.dispatch(setCurrentUser(decoded,user));
+  store.dispatch(setCurrentUser(decoded, user));
 }
 
 class App extends Component {
@@ -43,6 +47,10 @@ class App extends Component {
             <Route exact path="/detailsr" component={DetailsR} />
             <Route exact path="/profilea" component={ProfileA} />
             <Route exact path="/profiler" component={ProfileR} />
+            <Route exact path="/myApplications" component={MyApplication} />
+            <Route exact path="/applications" component={Applications} />
+            <Route exact path="/jobListing" component={JobListings} />
+            <Route exact path="/editJob" component={EditJob} />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

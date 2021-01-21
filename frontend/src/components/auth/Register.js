@@ -14,7 +14,7 @@ class Register extends Component {
       username: "",
       password: "",
       password2: "",
-      role: "applicants",
+      role: "",
       errors: {},
     };
   }
@@ -56,7 +56,7 @@ render() {
 return (
       <React.Fragment>
         <Navbar/>
-        <div style={{ height: "90vh" }} className="container valign-wrapper">
+        <div style={{ height: "90vh" }} className="container valign-wrapper z-depth-2">
           <div className="row">
             <div className="col s8 offset-s2">
               <div className="col s12">
@@ -69,14 +69,13 @@ return (
               </div>
               <form noValidate onSubmit={this.onSubmit}>
               <p className="grey-text text-darken-2" style={{ paddingLeft: "8px" }}>Type:</p>
-              <fieldset id="role" onChange={this.onChange.bind(this)}  style={{border: 0 }}>
+              <fieldset id="role" onChange={this.onChange.bind(this)} className={classnames("", {invalid: errors.role})}  style={{border: 0 }}>
                   <label style={{ paddingRight: "20px" }}> 
                     <input 
                       className="with-gap" 
                       name="role" 
                       type="radio" 
                       value='applicants'
-                      defaultChecked
                     />
                     <span className="grey-text text-darken-2">Applicant</span>
                   </label>
@@ -90,6 +89,7 @@ return (
                     <span className="grey-text text-darken-2">Recruiter</span>
                   </label>
                 </fieldset>
+                {errors.role ? <span style={{paddingLeft: "1rem" }} className="red-text">{errors.role}</span> : null} 
                 <div className="input-field col s12">
                   <input
                     onChange={this.onChange}

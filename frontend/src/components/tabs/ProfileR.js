@@ -64,7 +64,7 @@ export class ProfileR extends Component {
           formIsValid = false;
           errors["number"] = "Phone Number cannot be empty";
       }
-      if((this.state.number.length < 10 || this.state.number.length > 11) && this.state.number.length !=0){
+      if((this.state.number.length < 10 || this.state.number.length > 11) && this.state.number.length !=='0'){
           formIsValid = false;
           errors["number"] = "Invalid Phone Number";
       }
@@ -92,7 +92,9 @@ export class ProfileR extends Component {
             number: this.state.number,
             bio: this.state.bio,
           };
-      saveUser(userData);
+          if(this.state.disabled === false){
+            saveUser(userData).then(() => window.M.toast({ html: 'Details Updated!' }, 2000));
+          }
     }
   };
 
@@ -120,7 +122,7 @@ return (
                     letterSpacing: "1.5px",
                     backgroundColor: '#2E284C'
                 }}
-                onClick={this.props.history.goBack}
+                onClick={(e) => {this.props.history.push("/dashboard")}}
                 className="btn btn-medium"
                 >
                 Home
@@ -203,17 +205,14 @@ return (
                 <div className="row">
                     <div className="col s2">
                         <input 
-                            type='button' 
-                            className="btn btn-medium" 
+                            className="btn btn-large" 
                             style={{
                             borderRadius: "3px",
                             letterSpacing: "1.5px",
                             marginTop: "10px",
-                            height: "36px"
                             }}
                             type="submit"
                             value={this.state.disabled ? "Edit" : "Save"} 
-                            onClick={(e)=> {}}
                         />
                     </div>
                 </div>

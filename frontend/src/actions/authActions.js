@@ -10,7 +10,7 @@ export const registerUser = (userData, history) => dispatch => {
   axios
     .post("/api/users/register", userData)
     .then(res => {
-        if(userData.role == "applicants"){
+        if(userData.role === "applicants"){
           history.push({pathname: "/detailsa", state: {detail: [res.data,userData]}})
         } else {
           history.push({pathname: "/detailsr", state: {detail: [res.data,userData]}})
