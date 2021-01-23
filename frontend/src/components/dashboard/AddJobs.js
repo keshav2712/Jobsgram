@@ -113,7 +113,6 @@ export default function AddJobs(props) {
     } else {
       setJob({ ...job, [e.target.id]: e.target.value });
     }
-    console.log(e.target.id);
   };
 
   const onSubmit = (e) => {
@@ -259,7 +258,7 @@ export default function AddJobs(props) {
                   })}
                 />
                 <span className="red-text">{errors.salary}</span>
-                <label htmlFor="salary">Salary in Rs/Month</label>
+                <label htmlFor="salary">Salary in Rs/- Month</label>
               </div>
               <div
                 className="input-field col s1 valign-wrapper"
@@ -291,6 +290,7 @@ export default function AddJobs(props) {
               <fieldset
                 id="typeOfJob"
                 onChange={onChange}
+                value=" "
                 className={classnames("", { invalid: errors.typeOfJob })}
                 style={{
                   border: 0,

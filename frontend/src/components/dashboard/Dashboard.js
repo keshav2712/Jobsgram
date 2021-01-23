@@ -7,6 +7,7 @@ import AddJobs from "./AddJobs";
 import axios from "axios";
 
 class Dashboard extends Component {
+  _isMounted = false;
   constructor() {
     super();
     this.state = {
@@ -14,15 +15,19 @@ class Dashboard extends Component {
     };
   }
   componentDidMount() {
+    this._isMounted = true;
+
     const { user } = this.props.auth.user;
     if (user.role === "applicants") {
       axios
         .post("/api/applicant", user)
         .then((res) => {
-          this.setState({ userData: res.data });
-          this.setState((prevState) => ({
-            userData: { ...prevState.userData, role: "applicants" },
-          }));
+          if (this._isMounted) {
+            this.setState({ userData: res.data });
+            this.setState((prevState) => ({
+              userData: { ...prevState.userData, role: "applicants" },
+            }));
+          }
         })
         .catch((err) => console.log(err));
     } else {
@@ -113,7 +118,15 @@ class Dashboard extends Component {
                 )}
                 {user.role === "applicants" ? null : (
                   <li>
-                    <div className="btn navb" onClick={(e) => {}}>
+                    <div
+                      className="btn navb"
+                      onClick={(e) => {
+                        this.props.history.push({
+                          pathname: "/myEmployees",
+                          state: { detail: this.state.userData },
+                        });
+                      }}
+                    >
                       My Employees
                     </div>
                   </li>

@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Applicant from "./Applicant";
+import { makeStyles } from "@material-ui/core/styles";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 export default function Applications(props) {
   const job = props.location.state.detail;
+  const applicants = job.applicants;
+  const [filter, setFilter] = useState({ asc: "1", choice: "name" });
+  const classes = useStyles();
   return (
     <>
       <div className="Navbar-fixed">
@@ -36,17 +54,86 @@ export default function Applications(props) {
         </nav>
       </div>
       <div className="container valign-wrapper" style={{ width: "80%" }}>
-        <div className="row" style={{ width: "100%" }}>
+        <div className="row">
           <div className="col s12 center-align">
-            <div className="row" style={{ marginTop: "2rem" }}>
-              <div className="col s10 offset-s1">
-                <h4 className="grey-text text-darken-4 header left-align ">
-                  <b>Applications</b> for {job.title}
-                </h4>
-                {job.applicants.map((applicant) => (
-                  <Applicant applicant={applicant} key={job._id} />
-                ))}
+            <div className="container" style={{ margin: "0" }}>
+              <div
+                className="row"
+                style={{ width: "500px", marginTop: "2rem" }}
+              >
+                <div className="col s12 ">
+                  <h4 className="grey-text text-darken-4 header left-align ">
+                    <b>Applications</b> for {job.title}
+                  </h4>
+                </div>
               </div>
+              <div
+                className="row center-align"
+                style={{ marginBottom: "1.6rem", minWidth: "80vw" }}
+              >
+                <p className="left-align grey-text text-darken-3" style={sty}>
+                  Sort By:
+                </p>
+                <FormControl className={classes.formControl}>
+                  <Select
+                    value={filter.choice}
+                    onChange={(event) => {
+                      setFilter({ ...filter, choice: event.target.value });
+                    }}
+                  >
+                    <MenuItem value="name">Name</MenuItem>
+                    <MenuItem value="dateOfApplication">Date Applied</MenuItem>
+                    <MenuItem value="rating">Rating</MenuItem>
+                  </Select>
+                </FormControl>
+                <p className="grey-text text-darken-3" style={sty}>
+                  in
+                </p>
+                <FormControl className={classes.formControl}>
+                  <Select
+                    value={filter.asc}
+                    onChange={(event) => {
+                      setFilter({ ...filter, asc: event.target.value });
+                    }}
+                  >
+                    <MenuItem value="1">Ascending</MenuItem>
+                    <MenuItem value="-1">Descending</MenuItem>
+                  </Select>
+                </FormControl>
+                <p className="grey-text text-darken-3" style={sty}>
+                  Order
+                </p>
+              </div>
+              {applicants
+                .sort((applicant1, applicant2) => {
+                  if (filter.choice === "dateOfApplication")
+                    return (
+                      (new Date(applicant1["dateOfApplication"]) -
+                        new Date(applicant2["dateOfApplication"])) *
+                      parseInt(filter.asc)
+                    );
+                  else if (filter.choice === "name") {
+                    return (
+                      applicant1.id.name
+                        .split(" ")[0]
+                        .localeCompare(applicant2.id.name.split(" ")[0]) *
+                      parseInt(filter.asc)
+                    );
+                  } else {
+                    return (
+                      (applicant1.id.rating - applicant2.id.rating) *
+                      parseInt(filter.asc)
+                    );
+                  }
+                })
+                .filter((application) => application.status !== "accepted")
+                .map((applicant) => (
+                  <Applicant
+                    applicant={applicant}
+                    job={job}
+                    key={applicant._id}
+                  />
+                ))}
             </div>
           </div>
         </div>
@@ -54,3 +141,7 @@ export default function Applications(props) {
     </>
   );
 }
+const sty = {
+  width: "120px",
+  display: "inline-block",
+};

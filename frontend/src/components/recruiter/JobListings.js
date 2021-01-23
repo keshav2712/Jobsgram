@@ -7,14 +7,20 @@ export default function JobListings(props) {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     axios
       .post("api/recruiter", user)
       .then((res) => {
-        setJobs(res.data.jobsCreated);
+        if (isMounted) {
+          setJobs(res.data.jobsCreated);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -58,8 +64,8 @@ export default function JobListings(props) {
                 className="row"
                 style={{ width: "500px", marginTop: "2rem" }}
               >
-                <div className="col s10 offset-s1">
-                  <h4 className="grey-text text-darken-4 header left-align ">
+                <div className="col s11 offset-s1">
+                  <h4 className="grey-text text-darken-4 header left-align">
                     <b>Jobs Listed</b> by you
                   </h4>
                 </div>

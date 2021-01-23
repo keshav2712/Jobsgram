@@ -12,6 +12,7 @@ import axios from "axios";
 function Job(props) {
   const job = props.job;
   const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
   const [sop, setSop] = useState("");
   const [buttonValue, setButtonValue] = useState("APPLY");
   const [error, setError] = useState("");
@@ -37,6 +38,10 @@ function Job(props) {
     let error = "";
     let valid = true;
     if (sop === "") {
+      valid = false;
+      error = "SOP can't be empty";
+    }
+    if (sop === "\n") {
       valid = false;
       error = "SOP can't be empty";
     }
@@ -68,8 +73,13 @@ function Job(props) {
         .post("api/jobs/addApplicant", newJob)
         .then((res) => {
           console.log(res.data);
-          setOpen(false);
-          setButtonValue("APPLIED");
+          if (res.data == "error") {
+            setOpen(false);
+            setOpen1(true);
+          } else {
+            setButtonValue("APPLIED");
+            setOpen(false);
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -121,18 +131,21 @@ function Job(props) {
     );
   };
   return (
-    <div className="card" style={{ minHeight: "200px", minWidth: "80vw" }}>
-      <div className="row">
-        <div className="col s9">
-          <div className="card-content black-text">
+    <div className="card" style={{ minHeight: "200px", maxWidth: "40vw" }}>
+      <div className="row " style={{ display: "flex" }}>
+        <div className="col s8">
+          <div
+            className="card-content black-text"
+            style={{ paddingRight: "0" }}
+          >
             <span
               className="card-title left-align"
-              style={{ fontSize: "22px" }}
+              style={{ fontSize: "22px", marginBottom: "0" }}
             >
               <b>Job Title:</b> {job.title}
             </span>
-            <p className="left-align" style={sty}>
-              <b>Recruiter:</b> &nbsp;{job.recruiterName}
+            <p className="left-align" style={{ fontSize: "0.85rem" }}>
+              By &nbsp;{job.recruiterName}
             </p>
             <p className="left-align" style={sty}>
               <b>Salary:</b> &nbsp;Rs {job.salary}/month
@@ -150,7 +163,7 @@ function Job(props) {
             </p>
           </div>
         </div>
-        <div className="col s3" style={{ height: "200px", display: "grid" }}>
+        <div className="col s4 left-align" style={{ display: "grid" }}>
           <button
             className="waves-effect waves-light btn-large button"
             onClick={handleClickOpen}
@@ -195,7 +208,25 @@ function Job(props) {
             Cancel
           </Button>
           <Button onClick={apply} color="primary">
-            Apply
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open1}
+        onClose={() => setOpen1(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Error"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You cannot have more than 10 open applications
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen1(false)} color="primary" autoFocus>
+            Okay
           </Button>
         </DialogActions>
       </Dialog>

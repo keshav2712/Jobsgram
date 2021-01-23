@@ -12,6 +12,12 @@ const ApplicantSchema = new Schema({
       endYear: String,
     },
   ],
+  jobsApplied: [
+    {
+      id: String,
+      status: String,
+    },
+  ],
   skills: [String],
   rating: Number,
   foundJob: String,

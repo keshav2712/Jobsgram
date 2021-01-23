@@ -44,28 +44,32 @@ export class ProfileA extends Component {
     };
   }
   componentDidMount() {
+    this._isMounted = true;
+
     const data = this.props.location.state.detail;
     data.userId = data._id;
     console.log(data);
     axios
       .post("/api/applicant", data)
       .then((res) => {
-        this.setState({
-          id: res.data._id,
-          name: res.data.name ? res.data.name : "",
-          email: res.data.email ? res.data.email : "",
-          number: res.data.number ? res.data.number : "",
-          education: res.data.education ? res.data.education : [{}],
-          skills: res.data.skills ? res.data.skills : [{}],
-          role: data.role ? data.role : "",
-        });
-        for (let i = 0; i < res.data.skills.length; i++) {
-          defSkills[i] = {
-            value: res.data.skills[i],
-            label: res.data.skills[i],
-          };
+        if (this._isMounted) {
+          this.setState({
+            id: res.data._id,
+            name: res.data.name ? res.data.name : "",
+            email: res.data.email ? res.data.email : "",
+            number: res.data.number ? res.data.number : "",
+            education: res.data.education ? res.data.education : [{}],
+            skills: res.data.skills ? res.data.skills : [{}],
+            role: data.role ? data.role : "",
+          });
+          for (let i = 0; i < res.data.skills.length; i++) {
+            defSkills[i] = {
+              value: res.data.skills[i],
+              label: res.data.skills[i],
+            };
+          }
+          console.log(defSkills);
         }
-        console.log(defSkills);
       })
       .catch((err) => console.log(err));
   }
@@ -159,7 +163,7 @@ export class ProfileA extends Component {
   createUI() {
     const { errors } = this.state;
     return this.state.education.map((el, i) => (
-      <React.Fragment>
+      <React.Fragment key={Math.random()}>
         <div className="row" style={{ marginBottom: "0px" }}>
           <div
             className="input-field col s12"
@@ -185,7 +189,7 @@ export class ProfileA extends Component {
           </div>
         </div>
         <div className="row" style={{ marginBottom: "0px" }}>
-          <div className="input-field col s4">
+          <div className="input-field col s4" style={{ margin: "7px 0" }}>
             <span style={sty}>Start Year</span>
             <input
               type="number"
@@ -203,7 +207,10 @@ export class ProfileA extends Component {
               {errors.education[i] ? errors.education[i].startYear : null}
             </span>
           </div>
-          <div className="input-field col s4 offset-s1">
+          <div
+            className="input-field col s4 offset-s1"
+            style={{ margin: "7px 0" }}
+          >
             <span style={sty}>End Year</span>
             <input
               type="number"
@@ -355,7 +362,10 @@ export class ProfileA extends Component {
                 </h4>
               </div>
               <form onSubmit={this.onSubmit}>
-                <div className="input-field col s12">
+                <div
+                  className="input-field col s12"
+                  style={{ margin: "7px 0" }}
+                >
                   <span style={sty}>Name</span>
                   <input
                     onChange={this.onChange}
@@ -370,7 +380,10 @@ export class ProfileA extends Component {
                   />
                   <span className="red-text">{errors.name}</span>
                 </div>
-                <div className="input-field col s12">
+                <div
+                  className="input-field col s12"
+                  style={{ margin: "7px 0" }}
+                >
                   <span style={sty}>E-mail</span>
                   <input
                     onChange={this.onChange}
@@ -385,7 +398,10 @@ export class ProfileA extends Component {
                   />
                   <span className="red-text">{errors.email}</span>
                 </div>
-                <div className="input-field col s12">
+                <div
+                  className="input-field col s12"
+                  style={{ margin: "7px 0" }}
+                >
                   <span style={sty}>Phone Number</span>
                   <input
                     onChange={this.onChange}

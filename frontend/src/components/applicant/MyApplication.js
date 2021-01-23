@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export default function MyApplication(props) {
   const userData = props.location.state.detail;

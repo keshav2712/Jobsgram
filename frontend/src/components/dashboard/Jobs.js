@@ -30,6 +30,7 @@ function Jobs(props) {
     slider: [0, 999],
     choice: "salary",
     maxs: 0,
+    openApps: 0,
   });
   const classes = useStyles();
 
@@ -38,15 +39,29 @@ function Jobs(props) {
       .get("api/jobs")
       .then((res) => {
         setJobs(res.data);
-        let maxv = 0;
-        for (let i = 0; i < res.data.length; i++)
+        let maxv = 0,
+          count = 0,
+          id = props.user._id;
+        for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].salary > maxv) maxv = res.data[i].salary;
-        setFilter({ ...filter, slider: [filter.slider[0], maxv], maxs: maxv });
+          for (let j = 0; j < res.data[i].applicants.length; j++) {
+            if (res.data[i].applicants[j].id == id) {
+              count++;
+            }
+          }
+        }
+        console.log(count);
+        setFilter({
+          ...filter,
+          slider: [filter.slider[0], maxv],
+          maxs: maxv,
+          openApps: count,
+        });
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [props]);
 
   const printJobs = () => {
     const fuse = new Fuse(jobs, { keys: ["title"] });
@@ -69,7 +84,27 @@ function Jobs(props) {
             .includes(filter.typeOfJob.toLowerCase()) &&
           new Date() < new Date(job.deadline)
       )
-      .map((job) => <Job key={job._id} user={props.user} job={job} />);
+      .map((job, i, characterResults) => {
+        if (i % 2 == 0) {
+          return (
+            <div
+              className="row"
+              key={characterResults[i]._id}
+              style={{ display: "flex" }}
+            >
+              <div className="col s6">
+                <Job user={props.user} job={characterResults[i]} />
+              </div>
+
+              <div className="col s6">
+                {characterResults[i + 1] ? (
+                  <Job user={props.user} job={characterResults[i + 1]} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+      });
   };
 
   return (
@@ -129,9 +164,10 @@ function Jobs(props) {
           </p>
           <fieldset
             id="role"
-            onChange={(e) =>
-              setFilter({ ...filter, typeOfJob: e.target.value })
-            }
+            onChange={(e) => {
+              setFilter({ ...filter, typeOfJob: e.target.value });
+              console.log(filter.openApps);
+            }}
             style={{ border: 0, display: "inline-block", paddingTop: "35px" }}
           >
             <span className="grey-text text-darken-3    ">

@@ -27,6 +27,15 @@ export default function Job(props) {
       dateObj.getFullYear()
     );
   };
+  const getAccepteds = () => {
+    let positionsLeft = job.positions;
+    job.applicants.forEach((applicant) => {
+      if (applicant.status === "accepted") {
+        positionsLeft--;
+      }
+    });
+    return positionsLeft;
+  };
   const getTimes = () => {
     var date = new Date(job.deadline);
     var hours = date.getHours();
@@ -64,11 +73,11 @@ export default function Job(props) {
               <b>Deadline:</b> &nbsp;{getDates(job.deadline)} at {getTimes()}
             </p>
             <p className="left-align" style={sty}>
-              <b>Number of Applicants:</b> &nbsp;{job.applications}
+              <b>Number of Applicants:</b> &nbsp;{job.applicants.length}
             </p>
             <p className="left-align" style={sty}>
               <b>Positions Left:</b> &nbsp;
-              {job.positions - job.applicants.length}
+              {getAccepteds()}
             </p>
           </div>
         </div>

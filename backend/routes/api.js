@@ -10,7 +10,32 @@ const User = require("../models/User");
 const Jobs = require("../models/Job");
 const Recruiter = require("../models/Recruiter");
 const Applicant = require("../models/Applicant");
+var nodemailer = require("nodemailer");
 
+const mailer = (email) => {
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "jobsgram@gmail.com",
+      pass: "lemonpass",
+    },
+  });
+
+  var mailOptions = {
+    from: "jobsgram@gmail.com",
+    to: email,
+    subject: "Congratulations! You have just been hired! Lesssgooo",
+    text:
+      "Dear Applicant, \nCongratulations! You have been selceted for the job you applied from our website-JOBSGRAM\nRegards,\nJobsgram",
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
 //User
 router.route("/users").get((req, res) => {
   User.find()
@@ -149,7 +174,7 @@ router.route("/applicant/save").post((req, res) => {
 });
 
 router.route("/applicant").post((req, res) => {
-  Applicant.findOne({ _id: req.body.userId })
+  Applicant.findOne({ _id: req.body.userId ? req.body.userId : req.body.id })
     .then((applicant) => {
       if (!applicant) {
         return res.status(404).json({ notfound: "Applicant not found" });
@@ -175,7 +200,11 @@ router.route("/recruiter/save").post((req, res) => {
 });
 router.route("/recruiter").post((req, res) => {
   Recruiter.findOne({ _id: req.body.userId ? req.body.userId : req.body._id })
-    .populate({ path: "jobsCreated" })
+    .populate({
+      path: "jobsCreated",
+      model: "jobs",
+      populate: { path: "applicants.id", model: "applicants" },
+    })
     .exec((err, recruiter) => {
       if (err) {
         res.status(400).json(err);
@@ -225,17 +254,68 @@ router.post("/jobs/update", (req, res) => {
     job
       .save()
       .then((job) => res.json(job))
-      .catch((err) => res.status(400).json(err));
+      .catch((err) => console.log(err));
   });
 });
 
 router.post("/jobs/addApplicant", (req, res) => {
+  let count = 0;
   Job.findOne({ _id: req.body.id }).then((job) => {
-    job.applicants.push(req.body.applicant);
-    job
-      .save()
-      .then((job) => res.json(job))
-      .catch((err) => res.status(400).json(err));
+    Applicant.findOne({ _id: req.body.applicant.id }).then((applicant) => {
+      applicant.jobsApplied.forEach((job) => {
+        if (job.status != "rejected") count++;
+      });
+      if (count > 10) {
+        return res.json("error");
+      } else {
+        applicant.jobsApplied.push({ id: req.body.id, status: "applied" });
+        applicant.save().then(() => {
+          job.applicants.push(req.body.applicant);
+
+          job
+            .save()
+            .then((job) => res.json(job))
+            .catch((err) => res.status(400).json(err));
+        });
+      }
+    });
+  });
+});
+
+router.post("/jobs/updateStatus", (req, res) => {
+  Job.findOne({ _id: req.body._id }).then((job) => {
+    job.applicants.forEach((applicant, i) => {
+      if (req.body.applicant.id == applicant.id) {
+        if (req.body.applicant.status) {
+          job.applicants[i].status = req.body.applicant.status;
+          if (req.body.applicant.status === "accepted") {
+            Applicant.findOne({ _id: req.body.applicant.id }).then(
+              (applicant) => {
+                mailer(applicant.email);
+                applicant.jobsApplied.forEach((job) => {
+                  if (job.id != req.body._id) {
+                    job.status = "rejected";
+                  } else {
+                    job.status = "accepted";
+                  }
+                });
+                applicant.save();
+              }
+            );
+          }
+        }
+        if (req.body.applicant.dateOfJoining) {
+          job.applicants[i].dateOfJoining = req.body.applicant.dateOfJoining;
+        }
+        if (req.body.applicant.rating) {
+          job.applicants[i].rating = req.body.applicant.rating;
+        }
+        job
+          .save()
+          .then((job) => res.json(job.applicants[i]))
+          .catch((err) => console.log(err));
+      }
+    });
   });
 });
 

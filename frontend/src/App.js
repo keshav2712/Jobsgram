@@ -18,6 +18,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import ProfileA from "./components/tabs/ProfileA";
 import ProfileR from "./components/tabs/ProfileR";
 import JobListings from "./components/recruiter/JobListings";
+import MyEmployees from "./components/recruiter/MyEmployees";
 import Applications from "./components/recruiter/Applications";
 import EditJob from "./components/recruiter/EditJob";
 import MyApplication from "./components/applicant/MyApplication";
@@ -49,6 +50,7 @@ class App extends Component {
             <Route exact path="/profiler" component={ProfileR} />
             <Route exact path="/myApplications" component={MyApplication} />
             <Route exact path="/applications" component={Applications} />
+            <Route exact path="/myEmployees" component={MyEmployees} />
             <Route exact path="/jobListing" component={JobListings} />
             <Route exact path="/editJob" component={EditJob} />
             <Switch>
