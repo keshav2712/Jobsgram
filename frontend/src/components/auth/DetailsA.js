@@ -158,7 +158,7 @@ class DetailsA extends Component {
   createUI() {
     const { errors } = this.state;
     return this.state.education.map((el, i) => (
-      <React.Fragment>
+      <React.Fragment key={i}>
         <div className="row" style={{ marginBottom: "0px" }}>
           <div
             className="input-field col s12"

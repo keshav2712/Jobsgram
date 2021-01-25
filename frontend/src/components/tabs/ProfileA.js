@@ -6,6 +6,8 @@ import CreatableSelect from "react-select/creatable";
 import { saveUser } from "../../utils/saveUser";
 import axios from "axios";
 import "./../../index.css";
+import profile from "./../../profile.png";
+import Button from "@material-ui/core/Button";
 
 let skills = [
   { value: "C", label: "C" },
@@ -19,7 +21,6 @@ let skills = [
   { value: "React", label: "React" },
   { value: "Python", label: "Python" },
 ];
-let defSkills = [];
 export class ProfileA extends Component {
   constructor() {
     super();
@@ -61,14 +62,28 @@ export class ProfileA extends Component {
             education: res.data.education ? res.data.education : [{}],
             skills: res.data.skills ? res.data.skills : [{}],
             role: data.role ? data.role : "",
+            resumeName: res.data.resumeName ? res.data.resumeName : "",
+            imageName: res.data.imageName ? res.data.imageName : "",
           });
-          for (let i = 0; i < res.data.skills.length; i++) {
-            defSkills[i] = {
-              value: res.data.skills[i],
-              label: res.data.skills[i],
+          if (res.data.imageName) {
+            const data2 = {
+              filename: res.data.imageName,
+              user: res.data._id,
             };
+            axios
+              .post("http://localhost:5000/download", data2, {
+                responseType: "blob",
+              })
+              .then((response) => {
+                const url = window.URL.createObjectURL(
+                  new Blob([response.data])
+                );
+                document.querySelector("#profilePic").src = url;
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
-          console.log(defSkills);
         }
       })
       .catch((err) => console.log(err));
@@ -172,7 +187,7 @@ export class ProfileA extends Component {
   createUI() {
     const { errors } = this.state;
     return this.state.education.map((el, i) => (
-      <React.Fragment key={Math.random()}>
+      <React.Fragment key={i}>
         <div className="row" style={{ marginBottom: "0px" }}>
           <div
             className="input-field col s12"
@@ -292,6 +307,72 @@ export class ProfileA extends Component {
     });
   };
 
+  download = (type) => {
+    let filename;
+    if (type === "resume") {
+      filename = this.state.resumeName;
+    } else if (type === "image") {
+      filename = this.state.imageName;
+    }
+    if (filename === "") {
+      alert("File not uploaded");
+      return;
+    }
+    const data = {
+      filename: filename,
+      user: this.state.id,
+    };
+    axios
+      .post("http://localhost:5000/download", data, { responseType: "blob" })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  uploadFile = (e) => {
+    let file = e.target.files[0];
+    if (e.target.name === "resume" && file.type !== "application/pdf") {
+      alert("Only PDF allowed");
+      return;
+    }
+    if (
+      e.target.name === "image" &&
+      file.type !== "image/jpeg" &&
+      file.type !== "image/png"
+    ) {
+      alert("Only png and jpeg allowed");
+      return;
+    }
+    let data = new FormData();
+    data.append("file", e.target.files[0]);
+    data.append("user", this.state.id);
+    data.append("type", e.target.name);
+    axios
+      .post("http://localhost:5000/upload", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        if (e.target.name === "resume") {
+          this.setState({ resumeName: res.data.resumeName });
+        } else if (e.target.name === "image") {
+          this.setState({ imageName: res.data.imageName });
+          const url = window.URL.createObjectURL(e.target.files[0]);
+          document.querySelector("#profilePic").src = url;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
     if (this.handleValidation()) {
@@ -314,7 +395,6 @@ export class ProfileA extends Component {
   };
 
   render() {
-    console.log(skills);
     const { errors } = this.state;
     return (
       <React.Fragment>
@@ -328,6 +408,32 @@ export class ProfileA extends Component {
                 <h4>
                   <b>Personal Details</b>
                 </h4>
+              </div>
+              <div
+                class="col s12 center-align"
+                style={{ marginTop: "1.5rem", marginBottom: "0.5rem" }}
+              >
+                <img
+                  src={profile}
+                  style={{ height: "10rem", width: "10rem" }}
+                  alt=""
+                  id="profilePic"
+                  class="circle responsive-img"
+                />
+              </div>
+              <div
+                class="col s12 center-align"
+                style={{ marginBottom: "0.5rem" }}
+              >
+                <Button component="label" variant="contained" color="primary">
+                  <input
+                    hidden
+                    name="image"
+                    type="file"
+                    onChange={(e) => (e.target ? this.uploadFile(e) : null)}
+                  />
+                  Change DP
+                </Button>
               </div>
               <form onSubmit={this.onSubmit}>
                 <div
@@ -439,7 +545,6 @@ export class ProfileA extends Component {
                   </div>
                   <div className="col s11 offset-s1">
                     <CreatableSelect
-                      defaultValue={defSkills}
                       isMulti
                       isDisabled={this.state.disabled}
                       closeMenuOnSelect={false}
@@ -450,6 +555,39 @@ export class ProfileA extends Component {
                       }}
                     />
                   </div>
+                </div>
+                <div
+                  className="col s1"
+                  style={{ marginLeft: "10px", fontSize: "16px" }}
+                  className="black-text"
+                >
+                  Resume:
+                </div>
+                <div
+                  className="col s11 offset-s1 center-align"
+                  style={{ marginBottom: "2rem" }}
+                >
+                  <Button component="label" variant="contained" color="primary">
+                    <input
+                      hidden
+                      name="resume"
+                      type="file"
+                      onChange={(e) => (e.target ? this.uploadFile(e) : null)}
+                    />
+                    <i className="material-icons">arrow_upward</i>
+                    Upload Resume
+                  </Button>
+                  <Button
+                    style={{ marginLeft: "2rem" }}
+                    color="primary"
+                    className="btn btn-small"
+                    onClick={(e) => {
+                      this.download("resume");
+                    }}
+                  >
+                    <i className="material-icons">arrow_downward</i>
+                    Resume
+                  </Button>
                 </div>
                 <div className="col s12">
                   <input

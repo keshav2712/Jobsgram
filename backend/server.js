@@ -34,6 +34,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 app.use("/api", api);
+const Applicant = require("./models/Applicant");
 
 app.use(fileUpload());
 // file upload api
@@ -45,16 +46,32 @@ app.post("/upload", (req, res) => {
   const myFile = req.files.file;
   //  mv() method places the file inside public directory
   myFile.mv(
-    `${__dirname}/uploads/${myFile.name}+${req.user._id}`,
+    `${__dirname}/uploads/${req.body.user}${myFile.name}`,
     function (err) {
       if (err) {
         console.log(err);
         return res.status(500).send({ msg: "Error occured" });
       }
       // returing the response with file path and name
-      return res.send({ name: myFile.name, path: `/${myFile.name}` });
+      Applicant.findOne({ _id: req.body.user }).then((applicant) => {
+        if (req.body.type === "resume") {
+          applicant.resumeName = myFile.name;
+        } else if (req.body.type === "image") {
+          applicant.imageName = myFile.name;
+        }
+        applicant
+          .save()
+          .then((applicant) => res.json(applicant))
+          .catch((err) => {
+            console.log(err);
+          });
+      });
     }
   );
+});
+
+app.post("/download", (req, res) => {
+  res.download(__dirname + `/uploads/${req.body.user}${req.body.filename}`);
 });
 
 const port = process.env.PORT || 5000;

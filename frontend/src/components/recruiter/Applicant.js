@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
+import Button from "@material-ui/core/Button";
 
 function StarIcon(props) {
   const { fill = "yellow" } = props;
@@ -74,7 +75,6 @@ export default function Applicant(props) {
       axios
         .post("api/jobs/updateStatus", newJob)
         .then((res) => {
-          console.log(res.data);
           setStatus("rejected");
         })
         .catch((err) => {
@@ -113,6 +113,30 @@ export default function Applicant(props) {
       setStatus("accepted");
     }
   };
+  const download = () => {
+    let filename = applicant.resumeName ? applicant.resumeName : "";
+    if (filename === "") {
+      alert("File not uploaded");
+      return;
+    }
+    const data = {
+      filename: filename,
+      user: applicant._id,
+    };
+    axios
+      .post("http://localhost:5000/download", data, { responseType: "blob" })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const colors = () => {
     if (status === "applied") {
       return "#ffe087";
@@ -120,6 +144,11 @@ export default function Applicant(props) {
       return "#5c74ec";
     } else {
       return "#00ab66";
+    }
+  };
+  const font = () => {
+    if (status === "applied") {
+      return "black";
     }
   };
   return status === "rejected" ? null : (
@@ -148,6 +177,7 @@ export default function Applicant(props) {
                 </div>
               </div>
             </span>
+
             <p className="left-align" style={sty}>
               <b>Skills:</b> &nbsp;
               {applicant.skills.length ? printSkills(applicant.skills) : null}
@@ -171,6 +201,19 @@ export default function Applicant(props) {
                 );
               })}
             </p>
+            <div className="left-align" style={{ marginTop: "0.8rem" }}>
+              <Button
+                style={{ marginLeft: "2rem" }}
+                color="primary"
+                className="btn btn-small"
+                onClick={(e) => {
+                  download();
+                }}
+              >
+                <i className="material-icons">arrow_downward</i>
+                Resume
+              </Button>
+            </div>
           </div>
         </div>
         <div className="col s1" style={{ height: "200px", display: "grid" }}>
@@ -178,7 +221,7 @@ export default function Applicant(props) {
             className="waves-effect waves-light btn-large button"
             onClick={onClick}
             disabled={props.disabled}
-            style={{ margin: "auto", backgroundColor: colors() }}
+            style={{ margin: "auto", backgroundColor: colors(), color: font() }}
           >
             {status === "applied"
               ? "SHORTLIST"

@@ -24,5 +24,7 @@ const ApplicantSchema = new Schema({
   skills: [String],
   rating: Number,
   foundJob: String,
+  imageName: String,
+  resumeName: String,
 });
 module.exports = Applicant = mongoose.model("applicants", ApplicantSchema);
