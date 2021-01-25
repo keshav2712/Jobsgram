@@ -99,6 +99,10 @@ class DetailsA extends Component {
       formIsValid = false;
       errors["number"] = "Phone Number cannot be empty";
     }
+    if (parseInt(this.state.number) <= 0) {
+      formIsValid = false;
+      errors["number"] = "Phone Number cannot be negative";
+    }
     if (
       (this.state.number.length < 10 || this.state.number.length > 11) &&
       this.state.number.length !== 0
@@ -124,8 +128,9 @@ class DetailsA extends Component {
         errors.education[i].startYear = "Invalid Year";
       }
       if (
-        this.state.education[i].endYear < 1900 ||
-        this.state.education[i].endYear > 3020
+        (this.state.education[i].endYear < 1900 ||
+          this.state.education[i].endYear > 3020) &&
+        !this.state.education[i].endYear === ""
       ) {
         formIsValid = false;
         errors.education[i].endYear = "Invalid Year";

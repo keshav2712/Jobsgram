@@ -126,7 +126,20 @@ export default function Applications(props) {
                     );
                   }
                 })
-                .filter((application) => application.status !== "accepted")
+                .filter((application) => {
+                  console.log(application);
+                  var notEmployed = false;
+                  for (let i = 0; i < application.id.jobsApplied.length; i++) {
+                    if (application.id.jobsApplied.status === "accepted") {
+                      notEmployed = true;
+                    }
+                  }
+                  return (
+                    application.status !== "accepted" &&
+                    application.status !== "rejected" &&
+                    notEmployed
+                  );
+                })
                 .map((applicant) => (
                   <Applicant
                     applicant={applicant}

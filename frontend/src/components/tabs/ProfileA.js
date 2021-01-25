@@ -46,7 +46,7 @@ export class ProfileA extends Component {
   componentDidMount() {
     this._isMounted = true;
 
-    const data = this.props.location.state.detail;
+    const data = this.props.user;
     data.userId = data._id;
     console.log(data);
     axios
@@ -113,6 +113,10 @@ export class ProfileA extends Component {
       formIsValid = false;
       errors["number"] = "Phone Number cannot be empty";
     }
+    if (parseInt(this.state.number) <= 0) {
+      formIsValid = false;
+      errors["number"] = "Phone Number cannot be negative";
+    }
     if (
       (this.state.number.length < 10 || this.state.number.length > 11) &&
       this.state.number.length !== 0
@@ -138,8 +142,9 @@ export class ProfileA extends Component {
         errors.education[i].startYear = "Invalid Year";
       }
       if (
-        this.state.education[i].endYear < 1900 ||
-        this.state.education[i].endYear > 3020
+        (this.state.education[i].endYear < 1900 ||
+          this.state.education[i].endYear > 3020) &&
+        !this.state.education[i].endYear === ""
       ) {
         formIsValid = false;
         errors.education[i].endYear = "Invalid Year";
@@ -167,7 +172,7 @@ export class ProfileA extends Component {
         <div className="row" style={{ marginBottom: "0px" }}>
           <div
             className="input-field col s12"
-            style={{ margin: "7px 0" }}
+            style={{ margin: "2px 0" }}
             key={i}
           >
             <span style={sty}>Institution Name</span>
@@ -189,7 +194,7 @@ export class ProfileA extends Component {
           </div>
         </div>
         <div className="row" style={{ marginBottom: "0px" }}>
-          <div className="input-field col s4" style={{ margin: "7px 0" }}>
+          <div className="input-field col s4" style={{ margin: "2px 0" }}>
             <span style={sty}>Start Year</span>
             <input
               type="number"
@@ -209,7 +214,7 @@ export class ProfileA extends Component {
           </div>
           <div
             className="input-field col s4 offset-s1"
-            style={{ margin: "7px 0" }}
+            style={{ margin: "2px 0" }}
           >
             <span style={sty}>End Year</span>
             <input
@@ -309,53 +314,12 @@ export class ProfileA extends Component {
     const { errors } = this.state;
     return (
       <React.Fragment>
-        <div className="Navbar-fixed">
-          <nav className="z-depth-0">
-            <div className="nav-wrapper" style={{ backgroundColor: "#2E284C" }}>
-              <div
-                style={{
-                  fontFamily: "monospace",
-                  fontColor: "#F0F1F7",
-                }}
-                className="col s5 brand-logo center"
-              >
-                <i className="material-icons">work</i>
-                JOBSGRAM
-              </div>
-              <ul id="nav-mobile" className="left">
-                <li>
-                  <div
-                    className="btn navb"
-                    onClick={(e) => {
-                      this.props.history.push("/dashboard");
-                    }}
-                  >
-                    Home
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className="btn navb"
-                    onClick={(e) => {
-                      this.props.history.push({
-                        pathname: "/myApplications",
-                        state: { detail: this.props.location.state.detail },
-                      });
-                    }}
-                  >
-                    My Applications
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        </div>
         <div className="container valign-wrapper">
           <div
             className="row"
             style={{ margin: "30px 0px 30px 0px", width: "100%" }}
           >
-            <div className="col s8 offset-s2">
+            <div className="col s10 offset-s1">
               <div className="col s12">
                 <h4>
                   <b>Personal Details</b>
@@ -364,7 +328,7 @@ export class ProfileA extends Component {
               <form onSubmit={this.onSubmit}>
                 <div
                   className="input-field col s12"
-                  style={{ margin: "7px 0" }}
+                  style={{ margin: "2px 0" }}
                 >
                   <span style={sty}>Name</span>
                   <input
@@ -382,7 +346,7 @@ export class ProfileA extends Component {
                 </div>
                 <div
                   className="input-field col s12"
-                  style={{ margin: "7px 0" }}
+                  style={{ margin: "2px 0" }}
                 >
                   <span style={sty}>E-mail</span>
                   <input
@@ -400,7 +364,7 @@ export class ProfileA extends Component {
                 </div>
                 <div
                   className="input-field col s12"
-                  style={{ margin: "7px 0" }}
+                  style={{ margin: "2px 0" }}
                 >
                   <span style={sty}>Phone Number</span>
                   <input
@@ -448,6 +412,27 @@ export class ProfileA extends Component {
                 </span>
                 <br />
                 <div className="row" style={{ padding: "10px 0px" }}>
+                  <div
+                    className="col s11 offset-s1"
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    {this.state.skills.map((skill) => (
+                      <>
+                        <span
+                          className="white-text"
+                          style={{
+                            backgroundColor: "#5c74ec",
+                            borderRadius: "10px",
+                            margin: "2rem 0",
+                            padding: "0.4rem",
+                          }}
+                        >
+                          {skill}
+                        </span>
+                        <span> </span>
+                      </>
+                    ))}
+                  </div>
                   <div className="col s11 offset-s1">
                     <CreatableSelect
                       defaultValue={defSkills}

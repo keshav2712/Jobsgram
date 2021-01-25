@@ -53,6 +53,7 @@ const JobSchema = new Schema({
     type: Number,
     required: true,
   },
+  rating: Number,
 });
 
 module.exports = Job = mongoose.model("jobs", JobSchema);

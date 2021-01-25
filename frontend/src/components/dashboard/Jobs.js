@@ -35,32 +35,38 @@ function Jobs(props) {
   const classes = useStyles();
 
   useEffect(() => {
+    let isMounted = true;
+
     axios
       .get("api/jobs")
       .then((res) => {
-        setJobs(res.data);
-        let maxv = 0,
-          count = 0,
-          id = props.user._id;
-        for (let i = 0; i < res.data.length; i++) {
-          if (res.data[i].salary > maxv) maxv = res.data[i].salary;
-          for (let j = 0; j < res.data[i].applicants.length; j++) {
-            if (res.data[i].applicants[j].id == id) {
-              count++;
+        if (isMounted) {
+          setJobs(res.data);
+          let maxv = 0,
+            count = 0,
+            id = props.user._id;
+          for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].salary > maxv) maxv = res.data[i].salary;
+            for (let j = 0; j < res.data[i].applicants.length; j++) {
+              if (res.data[i].applicants[j].id == id) {
+                count++;
+              }
             }
           }
+          setFilter({
+            ...filter,
+            slider: [filter.slider[0], maxv],
+            maxs: maxv,
+            openApps: count,
+          });
         }
-        console.log(count);
-        setFilter({
-          ...filter,
-          slider: [filter.slider[0], maxv],
-          maxs: maxv,
-          openApps: count,
-        });
       })
       .catch((err) => {
         console.log(err);
       });
+    return () => {
+      isMounted = false;
+    };
   }, [props]);
 
   const printJobs = () => {

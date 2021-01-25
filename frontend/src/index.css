@@ -70,3 +70,15 @@ input[type="datetime-local"]:not(.browser-default):focus:not([readonly]) {
   background-color: #2e284c;
   z-index: 1;
 }
+.w-6 {
+  width: 1.5em;
+}
+.h-6 {
+  height: 1.5em;
+}
+.flex {
+  display: flex;
+}
+.cursor-pointer {
+  cursor: pointer;
+}

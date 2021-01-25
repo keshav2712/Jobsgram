@@ -14,7 +14,10 @@ const ApplicantSchema = new Schema({
   ],
   jobsApplied: [
     {
-      id: String,
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: "jobs",
+      },
       status: String,
     },
   ],

@@ -5,6 +5,11 @@ import { logoutUser } from "../../actions/authActions";
 import Jobs from "./Jobs";
 import AddJobs from "./AddJobs";
 import axios from "axios";
+import ProfileA from "./../tabs/ProfileA";
+import ProfileR from "./../tabs/ProfileR";
+import MyApplication from "./../applicant/MyApplication";
+import JobListings from "./../recruiter/JobListings";
+import MyEmployees from "./../recruiter/MyEmployees";
 
 class Dashboard extends Component {
   _isMounted = false;
@@ -12,11 +17,11 @@ class Dashboard extends Component {
     super();
     this.state = {
       userData: {},
+      tab: "dashboard",
     };
   }
   componentDidMount() {
     this._isMounted = true;
-
     const { user } = this.props.auth.user;
     if (user.role === "applicants") {
       axios
@@ -34,10 +39,12 @@ class Dashboard extends Component {
       axios
         .post("/api/recruiter", user)
         .then((res) => {
-          this.setState({ userData: res.data });
-          this.setState((prevState) => ({
-            userData: { ...prevState.userData, role: "recruiters" },
-          }));
+          if (this._isMounted) {
+            this.setState({ userData: res.data });
+            this.setState((prevState) => ({
+              userData: { ...prevState.userData, role: "recruiters" },
+            }));
+          }
         })
         .catch((err) => console.log(err));
     }
@@ -45,6 +52,34 @@ class Dashboard extends Component {
   onLogoutClick = (e) => {
     e.preventDefault();
     this.props.logoutUser();
+  };
+  choose = () => {
+    const { user } = this.props.auth.user;
+
+    if (user.role === "applicants") {
+      if (this.state.tab === "profile") {
+        return <ProfileA user={this.state.userData} />;
+      } else if (this.state.tab === "myApplications") {
+        return <MyApplication user={this.state.userData} />;
+      } else {
+        return <Jobs user={this.state.userData} />;
+      }
+    } else {
+      if (this.state.tab === "profile") {
+        return <ProfileR user={this.state.userData} />;
+      } else if (this.state.tab === "jobListings") {
+        return <AddJobs user={this.state.userData} />;
+      } else if (this.state.tab === "myEmployees") {
+        return <MyEmployees user={this.state.userData} />;
+      } else {
+        return (
+          <JobListings
+            user={this.state.userData}
+            history={this.props.history}
+          />
+        );
+      }
+    }
   };
   render() {
     const { user } = this.props.auth.user;
@@ -75,13 +110,23 @@ class Dashboard extends Component {
                   <div
                     className="btn navb"
                     onClick={(e) => {
-                      this.props.history.push({
-                        pathname:
-                          user.role === "applicants"
-                            ? "/profilea"
-                            : "/profiler",
-                        state: { detail: this.state.userData },
-                      });
+                      this.setState((prevState) => ({
+                        ...prevState,
+                        tab: "home",
+                      }));
+                    }}
+                  >
+                    Home
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className="btn navb"
+                    onClick={(e) => {
+                      this.setState((prevState) => ({
+                        ...prevState,
+                        tab: "profile",
+                      }));
                     }}
                   >
                     Profile
@@ -92,10 +137,10 @@ class Dashboard extends Component {
                     <div
                       className="btn navb"
                       onClick={(e) => {
-                        this.props.history.push({
-                          pathname: "/myApplications",
-                          state: { detail: this.state.userData },
-                        });
+                        this.setState((prevState) => ({
+                          ...prevState,
+                          tab: "myApplications",
+                        }));
                       }}
                     >
                       My Applications
@@ -106,13 +151,13 @@ class Dashboard extends Component {
                     <div
                       className="btn navb"
                       onClick={(e) => {
-                        this.props.history.push({
-                          pathname: "/jobListing",
-                          state: { detail: this.state.userData },
-                        });
+                        this.setState((prevState) => ({
+                          ...prevState,
+                          tab: "jobListings",
+                        }));
                       }}
                     >
-                      Job Listings
+                      Add Job
                     </div>
                   </li>
                 )}
@@ -121,10 +166,10 @@ class Dashboard extends Component {
                     <div
                       className="btn navb"
                       onClick={(e) => {
-                        this.props.history.push({
-                          pathname: "/myEmployees",
-                          state: { detail: this.state.userData },
-                        });
+                        this.setState((prevState) => ({
+                          ...prevState,
+                          tab: "myEmployees",
+                        }));
                       }}
                     >
                       My Employees
@@ -137,13 +182,7 @@ class Dashboard extends Component {
         </div>
         <div className="container valign-wrapper" style={{ width: "80%" }}>
           <div className="row">
-            <div className="col s12">
-              {user.role === "applicants" ? (
-                <Jobs user={this.state.userData} />
-              ) : (
-                <AddJobs user={this.state.userData} />
-              )}
-            </div>
+            <div className="col s12">{this.choose()}</div>
           </div>
         </div>
       </React.Fragment>

@@ -72,6 +72,10 @@ class DetailsR extends Component {
       formIsValid = false;
       errors["number"] = "Phone Number cannot be empty";
     }
+    if (parseInt(this.state.number) <= 0) {
+      formIsValid = false;
+      errors["number"] = "Phone Number cannot be negative";
+    }
     if (
       (this.state.number.length < 10 || this.state.number.length > 11) &&
       this.state.number.length !== 0

@@ -1,68 +1,86 @@
 import React, { useState, useEffect } from "react";
-
+import axios from "axios";
+import Application from "./Application";
 export default function MyApplication(props) {
-  const userData = props.location.state.detail;
+  const user = props.user;
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    axios
+      .post("api/applicant", user)
+      .then((res) => {
+        if (isMounted) {
+          console.log(res.data);
+          var jobs = res.data.jobsApplied;
+          for (let i = 0; i < jobs.length; i++) {
+            if (jobs[i].id) {
+              for (let j = 0; j < jobs[i].id.applicants.length; j++) {
+                if (jobs[i].id.applicants[j].id === props.user._id) {
+                  setApplications((applications) => [
+                    ...applications,
+                    {
+                      userId: props.user._id,
+                      title: jobs[i].id.title,
+                      dateOfJoining: jobs[i].id.applicants[j].dateOfJoining,
+                      salary: jobs[i].id.salary,
+                      rating: jobs[i].id.applicants[j].rating,
+                      id: jobs[i].id,
+                      status: jobs[i].id.applicants[j].status,
+                    },
+                  ]);
+                }
+              }
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   return (
     <React.Fragment>
-      <div className="Navbar-fixed">
-        <nav className="z-depth-0">
-          <div className="nav-wrapper" style={{ backgroundColor: "#2E284C" }}>
-            <div
-              style={{
-                fontFamily: "monospace",
-                fontColor: "#F0F1F7",
-              }}
-              className="col s5 brand-logo center"
-            >
-              <i className="material-icons">work</i>
-              JOBSGRAM
-            </div>
-            <ul id="nav-mobile" className="left">
-              <li>
-                <div
-                  className="btn navb"
-                  onClick={(e) => {
-                    props.history.push({
-                      pathname: "/profilea",
-                      state: { detail: userData },
-                    });
-                  }}
-                >
-                  Profile
-                </div>
-              </li>
-              <li>
-                <div
-                  className="btn navb"
-                  onClick={(e) => {
-                    props.history.push("/dashboard");
-                  }}
-                >
-                  Home
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-      <div className="container valign-wrapper" style={{ width: "80%" }}>
-        <div className="row">
-          <div className="col s12 center-align">
-            <div className="container" style={{ margin: "0" }}>
-              <div
-                className="row"
-                style={{ width: "500px", marginTop: "2rem" }}
-              >
-                <div className="col s10 offset-s1">
-                  <h4 className="grey-text text-darken-4 header left-align ">
-                    Your <b>APPLICATIONS</b>
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="row" style={{ width: "80vw", marginTop: "2rem" }}>
+        <div className="col s10 offset-s1">
+          <h4 className="grey-text text-darken-4 header left-align ">
+            Your <b>APPLICATIONS</b>
+          </h4>
         </div>
       </div>
+
+      {applications.map((application, i, applications) => {
+        if (i % 3 == 0) {
+          return (
+            <div
+              className="row"
+              key={applications[i].userId}
+              style={{ display: "flex" }}
+            >
+              <div className="col s4">
+                <Application application={applications[i]} />
+              </div>
+              <div className="col s4">
+                {applications[i + 1] ? (
+                  <Application application={applications[i + 1]} />
+                ) : null}
+              </div>
+              <div className="col s4">
+                {applications[i + 2] ? (
+                  <Application application={applications[i + 2]} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+      })}
     </React.Fragment>
   );
 }
+const sty = {
+  width: "120px",
+  display: "inline-block",
+};

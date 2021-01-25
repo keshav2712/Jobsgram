@@ -80,8 +80,7 @@ export default function EditJob(props) {
             .then((res) => {
               window.M.toast({ html: "Job Details Edited!" }, 2000);
               props.history.push({
-                pathname: "/jobListing",
-                state: { detail: props.location.state.detail[1] },
+                pathname: "/dashboard",
               });
             })
             .catch((err) => {

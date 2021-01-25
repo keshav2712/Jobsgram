@@ -9,10 +9,31 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 
+function StarIcon(props) {
+  const { fill = "yellow" } = props;
+  return (
+    <svg
+      style={{ height: "22px", width: "22px" }}
+      fill={fill}
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+      ></path>
+    </svg>
+  );
+}
+
 function Job(props) {
   const job = props.job;
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
   const [sop, setSop] = useState("");
   const [buttonValue, setButtonValue] = useState("APPLY");
   const [error, setError] = useState("");
@@ -29,9 +50,20 @@ function Job(props) {
     }
   });
   const handleClickOpen = () => {
-    getTimes();
     if (buttonValue === "APPLY") {
-      setOpen(true);
+      var employed = false;
+      for (let i = 0; i < props.user.jobsApplied.length; i++) {
+        if (props.user.jobsApplied[i].status === "accepted") {
+          employed = true;
+          break;
+        }
+      }
+      if (employed) {
+        setOpen(false);
+        setOpen2(true);
+      } else {
+        setOpen(true);
+      }
     }
   };
   const handleValidation = () => {
@@ -138,15 +170,27 @@ function Job(props) {
             className="card-content black-text"
             style={{ paddingRight: "0" }}
           >
-            <span
+            <div
               className="card-title left-align"
               style={{ fontSize: "22px", marginBottom: "0" }}
             >
               <b>Job Title:</b> {job.title}
-            </span>
+            </div>
             <p className="left-align" style={{ fontSize: "0.85rem" }}>
               By &nbsp;{job.recruiterName}
             </p>
+            <div
+              className="box flex"
+              style={{ paddingBottom: "0.5rem", paddingTop: "0.5rem" }}
+            >
+              {[1, 2, 3, 4, 5].map((index) => {
+                var fill;
+                if (index <= job.rating) fill = "yellow";
+                else fill = "none";
+
+                return <StarIcon key={index} fill={fill} />;
+              })}
+            </div>
             <p className="left-align" style={sty}>
               <b>Salary:</b> &nbsp;Rs {job.salary}/month
             </p>
@@ -226,6 +270,24 @@ function Job(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen1(false)} color="primary" autoFocus>
+            Okay
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open2}
+        onClose={() => setOpen2(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Error"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You are already employed, you cannot apply to more jobs
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen2(false)} color="primary" autoFocus>
             Okay
           </Button>
         </DialogActions>

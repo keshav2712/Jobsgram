@@ -4,14 +4,16 @@ import RatingIcon from "../../utils/rating";
 import axios from "axios";
 
 export default function Employee(props) {
-  const employee = props.employee;
-  const [rating, setRating] = React.useState(0);
-  const [hoverRating, setHoverRating] = React.useState(0);
+  const application = props.application;
+  const [rating, setRating] = React.useState(props.application.rating);
+  const [hoverRating, setHoverRating] = React.useState(
+    props.application.rating
+  );
 
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
-      setRating(props.employee.rating);
+      setRating(props.application.rating);
     }
     return () => {
       isMounted = false;
@@ -24,13 +26,20 @@ export default function Employee(props) {
   const onMouseLeave = () => {
     setHoverRating(0);
   };
+  const status = () => {
+    if (application.status === "applied") return "APPLIED";
+    else if (application.status === "shortlisted") return "SHORTLISTED";
+    else if (application.status === "accepted") return "ACCEPTED";
+    else return "REJECTED";
+  };
   const onSaveRating = (index) => {
     const newRating = {
-      id: props.employee.userId,
+      jobId: props.application.id._id,
+      id: props.application.userId,
       rating: index,
     };
     axios
-      .post("api/applicant/saveRating", newRating)
+      .post("api/jobs/saveRating", newRating)
       .then((res) => {
         console.log(res.data);
         setRating(index);
@@ -40,7 +49,10 @@ export default function Employee(props) {
       });
   };
   return (
-    <div className="card" style={{ minHeight: "130px", minWidth: "15vw" }}>
+    <div
+      className="card"
+      style={{ minHeight: "130px", minWidth: "15vw", height: "100%" }}
+    >
       <div className="row " style={{ display: "flex" }}>
         <div className="col s12">
           <div
@@ -51,20 +63,23 @@ export default function Employee(props) {
               className="card-title left-align"
               style={{ fontSize: "22px" }}
             >
-              <b>{employee.name}</b>
+              <b>{application.title}</b>
+              <span style={{ fontSize: "14px", paddingLeft: "1rem" }}>
+                {status()}
+              </span>
             </span>
             <p
               className="left-align"
-              style={{ padding: "0.3rem 0", fontSize: "18px" }}
+              style={{ padding: "0.3rem 0", fontSize: "16px" }}
             >
-              {employee.title}
-              {", "}
-              <span style={{ fontSize: "0.9rem" }}>{employee.typeOfJob}</span>
+              Rs {application.salary} /-month
             </p>
-            <p className="left-align" style={sty}>
-              <span style={{ fontSize: "0.85rem" }}>Joined:</span>&nbsp;
-              {moment(employee.dateOfJoining).format("LL")}
-            </p>
+            {application.dateOfJoining ? (
+              <p className="left-align" style={sty}>
+                <span style={{ fontSize: "0.85rem" }}>Joined:</span>&nbsp;
+                {moment(application.dateOfJoining).format("LL")}
+              </p>
+            ) : null}
             <div className="box flex" style={{ paddingTop: "0.7rem" }}>
               {[1, 2, 3, 4, 5].map((index) => {
                 return (
