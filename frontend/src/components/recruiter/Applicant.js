@@ -24,7 +24,6 @@ function StarIcon(props) {
 
 export default function Applicant(props) {
   const [status, setStatus] = useState(props.applicant.status);
-  const [disabled, setDisabled] = useState(false);
 
   const applicant = props.applicant.id;
   useEffect(() => {
@@ -33,18 +32,12 @@ export default function Applicant(props) {
       .post("api/applicant", applicant)
       .then((res) => {
         if (isMounted) {
-          console.log(res.data);
           for (let i = 0; i < res.data.jobsApplied.length; i++) {
             if (
               res.data.jobsApplied[i].status === "accepted" &&
               res.data.jobsApplied[i].id &&
               res.data.jobsApplied[i].id._id !== props.job._id
             ) {
-              console.log(
-                res.data.name,
-                res.data.jobsApplied[i],
-                props.job._id
-              );
               setStatus("rejected");
             }
             if (res.data.jobsApplied[i].id == props.job._id) {
@@ -108,7 +101,6 @@ export default function Applicant(props) {
           console.log(err);
         });
     } else if (status === "shortlisted") {
-      setDisabled(true);
       const newJob = {
         _id: props.job._id,
         applicant: {
@@ -119,16 +111,15 @@ export default function Applicant(props) {
       };
       props.checkPostions(newJob);
       setStatus("accepted");
-      setDisabled(true);
     }
   };
   const colors = () => {
     if (status === "applied") {
-      return "#5c74ec";
+      return "#ffe087";
     } else if (status === "shortlisted") {
-      return "#26a69a";
+      return "#5c74ec";
     } else {
-      return "green";
+      return "#00ab66";
     }
   };
   return status === "rejected" ? null : (
@@ -186,7 +177,7 @@ export default function Applicant(props) {
           <button
             className="waves-effect waves-light btn-large button"
             onClick={onClick}
-            disabled={disabled}
+            disabled={props.disabled}
             style={{ margin: "auto", backgroundColor: colors() }}
           >
             {status === "applied"

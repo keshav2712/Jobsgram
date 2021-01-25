@@ -52,7 +52,6 @@ export default function JobListings(props) {
         </h4>
         {jobs
           .filter((job) => {
-            console.log(job);
             let positionsLeft = job.positions;
             if (job.applicants) {
               job.applicants.forEach((applicant) => {

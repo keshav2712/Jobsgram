@@ -20,7 +20,9 @@ export default function Applications(props) {
   const job = props.location.state.detail;
   const [applicants, setApplicants] = useState([]);
   const [filter, setFilter] = useState({ asc: "1", choice: "name" });
+  const [disabled, setDisabled] = useState(false);
   const classes = useStyles();
+
   useEffect(() => {
     let isMounted = true;
     if (props) {
@@ -40,6 +42,7 @@ export default function Applications(props) {
     };
   }, [props]);
   const checkPostions = (newJob) => {
+    setDisabled(true);
     axios
       .post("api/jobs/updateStatusAccept", newJob)
       .then((res) => {
@@ -55,6 +58,7 @@ export default function Applications(props) {
       .catch((err) => {
         console.log(err);
       });
+    setDisabled(false);
   };
   return (
     <>
@@ -185,6 +189,7 @@ export default function Applications(props) {
                     job={job}
                     key={applicant._id}
                     checkPostions={checkPostions}
+                    disabled={disabled}
                   />
                 ))}
             </div>

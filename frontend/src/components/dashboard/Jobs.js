@@ -48,7 +48,7 @@ function Jobs(props) {
           for (let i = 0; i < res.data.length; i++) {
             if (res.data[i].salary > maxv) maxv = res.data[i].salary;
             for (let j = 0; j < res.data[i].applicants.length; j++) {
-              if (res.data[i].applicants[j].id == id) {
+              if (res.data[i].applicants[j].id === id) {
                 count++;
               }
             }
@@ -91,7 +91,7 @@ function Jobs(props) {
           new Date() < new Date(job.deadline)
       )
       .map((job, i, characterResults) => {
-        if (i % 2 == 0) {
+        if (i % 2 === 0) {
           return (
             <div
               className="row"

@@ -45,7 +45,7 @@ function Job(props) {
     }
     var count = 0;
     for (let i = 0; i < job.applicants.length; i++) {
-      if (job.applicants[i].status == "accpeted") count++;
+      if (job.applicants[i].status === "accpeted") count++;
       if (job.positions <= count) {
         setButtonValue("FULL");
       }
@@ -114,7 +114,7 @@ function Job(props) {
         .post("api/jobs/addApplicant", newJob)
         .then((res) => {
           console.log(res.data);
-          if (res.data == "error") {
+          if (res.data === "error") {
             setOpen(false);
             setOpen1(true);
           } else {
@@ -129,9 +129,9 @@ function Job(props) {
   };
   const colors = () => {
     if (buttonValue === "APPLIED") {
-      return "#26a69a";
+      return "#00ab66";
     } else if (buttonValue === "FULL") {
-      return "#CA0B00";
+      return "#cf142b";
     } else {
       return "#5c74ec";
     }
@@ -223,7 +223,11 @@ function Job(props) {
           <button
             className="waves-effect waves-light btn-large button"
             onClick={handleClickOpen}
-            style={{ margin: "auto", backgroundColor: colors() }}
+            style={{
+              margin: "auto",
+              backgroundColor: colors(),
+              borderRadius: "3px",
+            }}
           >
             {buttonValue}
           </button>

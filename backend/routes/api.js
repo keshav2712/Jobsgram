@@ -166,6 +166,7 @@ router.route("/applicant/save").post((req, res) => {
     applicant.number = req.body.number;
     applicant.education = req.body.education;
     applicant.skills = req.body.skills;
+    applicant.rating = 0;
     applicant
       .save()
       .then((applicant) => res.json(applicant))

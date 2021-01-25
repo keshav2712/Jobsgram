@@ -29,23 +29,23 @@ export default function MyEmployees(props) {
       .then((res) => {
         if (isMounted) {
           var jobs = res.data.jobsCreated;
+          var employeeList = [];
           for (let i = 0; i < jobs.length; i++) {
             for (let j = 0; j < jobs[i].applicants.length; j++) {
               if (jobs[i].applicants[j].status === "accepted") {
-                setEmployees((employees) => [
-                  ...employees,
-                  {
-                    name: jobs[i].applicants[j].id.name,
-                    userId: jobs[i].applicants[j].id._id,
-                    dateOfJoining: jobs[i].applicants[j].dateOfJoining,
-                    typeOfJob: jobs[i].typeOfJob,
-                    title: jobs[i].title,
-                    rating: jobs[i].applicants[j].id.rating,
-                  },
-                ]);
+                employeeList.push({
+                  name: jobs[i].applicants[j].id.name,
+                  userId: jobs[i].applicants[j].id._id,
+                  dateOfJoining: jobs[i].applicants[j].dateOfJoining,
+                  typeOfJob: jobs[i].typeOfJob,
+                  title: jobs[i].title,
+                  rating: jobs[i].applicants[j].id.rating,
+                });
               }
             }
           }
+          setEmployees(employeeList);
+          console.log(employeeList);
         }
       })
       .catch((err) => {

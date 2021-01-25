@@ -7,7 +7,6 @@ export default function Employee(props) {
   const employee = props.employee;
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
-
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
@@ -16,7 +15,7 @@ export default function Employee(props) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [props]);
 
   const onMouseEnter = (index) => {
     setHoverRating(index);
@@ -32,7 +31,6 @@ export default function Employee(props) {
     axios
       .post("api/applicant/saveRating", newRating)
       .then((res) => {
-        console.log(res.data);
         setRating(index);
       })
       .catch((err) => {

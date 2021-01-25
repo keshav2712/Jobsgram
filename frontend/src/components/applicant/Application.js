@@ -5,8 +5,8 @@ import axios from "axios";
 
 export default function Employee(props) {
   const application = props.application;
-  const [rating, setRating] = useState(props.application.rating);
-  const [hoverRating, setHoverRating] = useState(props.application.rating);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     let isMounted = true;

@@ -54,7 +54,7 @@ export default function MyApplication(props) {
       </div>
 
       {applications.map((application, i, applications) => {
-        if (i % 3 == 0) {
+        if (i % 3 === 0) {
           return (
             <div
               className="row"
@@ -81,7 +81,3 @@ export default function MyApplication(props) {
     </React.Fragment>
   );
 }
-const sty = {
-  width: "120px",
-  display: "inline-block",
-};
