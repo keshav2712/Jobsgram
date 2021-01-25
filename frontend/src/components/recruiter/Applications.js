@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Applicant from "./Applicant";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -17,9 +18,44 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Applications(props) {
   const job = props.location.state.detail;
-  const applicants = job.applicants;
+  const [applicants, setApplicants] = useState([]);
   const [filter, setFilter] = useState({ asc: "1", choice: "name" });
   const classes = useStyles();
+  useEffect(() => {
+    let isMounted = true;
+    if (props) {
+      axios
+        .post("api/jobs/getOne", job)
+        .then((res) => {
+          if (isMounted) {
+            setApplicants(res.data.applicants);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [props]);
+  const checkPostions = (newJob) => {
+    axios
+      .post("api/jobs/updateStatusAccept", newJob)
+      .then((res) => {
+        axios
+          .post("api/jobs/checkPositions", job)
+          .then((res) => {
+            setApplicants(res.data.applicants);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <div className="Navbar-fixed">
@@ -113,12 +149,14 @@ export default function Applications(props) {
                       parseInt(filter.asc)
                     );
                   else if (filter.choice === "name") {
-                    return (
-                      applicant1.id.name
-                        .split(" ")[0]
-                        .localeCompare(applicant2.id.name.split(" ")[0]) *
-                      parseInt(filter.asc)
-                    );
+                    if (applicant1.id.name) {
+                      return (
+                        applicant1.id.name
+                          .split(" ")[0]
+                          .localeCompare(applicant2.id.name.split(" ")[0]) *
+                        parseInt(filter.asc)
+                      );
+                    } else return false;
                   } else {
                     return (
                       (applicant1.id.rating - applicant2.id.rating) *
@@ -127,24 +165,26 @@ export default function Applications(props) {
                   }
                 })
                 .filter((application) => {
-                  console.log(application);
-                  var notEmployed = false;
-                  for (let i = 0; i < application.id.jobsApplied.length; i++) {
-                    if (application.id.jobsApplied.status === "accepted") {
-                      notEmployed = true;
+                  var notEmployed = true;
+                  if (application.id.jobsApplied) {
+                    for (
+                      let i = 0;
+                      i < application.id.jobsApplied.length;
+                      i++
+                    ) {
+                      if (application.id.jobsApplied.status === "accepted") {
+                        notEmployed = false;
+                      }
                     }
                   }
-                  return (
-                    application.status !== "accepted" &&
-                    application.status !== "rejected" &&
-                    notEmployed
-                  );
+                  return application.status !== "rejected" && notEmployed;
                 })
                 .map((applicant) => (
                   <Applicant
                     applicant={applicant}
                     job={job}
                     key={applicant._id}
+                    checkPostions={checkPostions}
                   />
                 ))}
             </div>

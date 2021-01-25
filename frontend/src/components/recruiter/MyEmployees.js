@@ -114,12 +114,14 @@ export default function MyEmployees(props) {
               parseInt(filter.asc)
             );
           else if (filter.choice === "name" || filter.choice === "title") {
-            return (
-              employees1[filter.choice]
-                .split(" ")[0]
-                .localeCompare(employees2[filter.choice].split(" ")[0]) *
-              parseInt(filter.asc)
-            );
+            if (employees1[filter.choice]) {
+              return (
+                employees1[filter.choice]
+                  .split(" ")[0]
+                  .localeCompare(employees2[filter.choice].split(" ")[0]) *
+                parseInt(filter.asc)
+              );
+            } else return false;
           } else {
             return (
               (employees1.rating - employees2.rating) * parseInt(filter.asc)

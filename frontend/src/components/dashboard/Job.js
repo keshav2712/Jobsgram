@@ -37,10 +37,18 @@ function Job(props) {
   const [sop, setSop] = useState("");
   const [buttonValue, setButtonValue] = useState("APPLY");
   const [error, setError] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     if (job.applicants.length >= job.applications) {
       setButtonValue("FULL");
+    }
+    var count = 0;
+    for (let i = 0; i < job.applicants.length; i++) {
+      if (job.applicants[i].status == "accpeted") count++;
+      if (job.positions <= count) {
+        setButtonValue("FULL");
+      }
     }
     for (var i = 0; i < job.applicants.length; i++) {
       if (job.applicants[i].id === props.user._id) {
@@ -91,6 +99,7 @@ function Job(props) {
   };
   const apply = (e) => {
     if (handleValidation()) {
+      setDisabled(true);
       const newJob = {
         id: job._id,
         applicant: {
@@ -163,7 +172,10 @@ function Job(props) {
     );
   };
   return (
-    <div className="card" style={{ minHeight: "200px", maxWidth: "40vw" }}>
+    <div
+      className="card"
+      style={{ minHeight: "200px", maxWidth: "40vw", minWidth: "35vw" }}
+    >
       <div className="row " style={{ display: "flex" }}>
         <div className="col s8">
           <div
@@ -251,7 +263,7 @@ function Job(props) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={apply} color="primary">
+          <Button onClick={apply} color="primary" disabled={disabled}>
             Submit
           </Button>
         </DialogActions>

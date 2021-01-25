@@ -13,26 +13,27 @@ export default function MyApplication(props) {
         if (isMounted) {
           console.log(res.data);
           var jobs = res.data.jobsApplied;
+          var applicationsL = [];
           for (let i = 0; i < jobs.length; i++) {
             if (jobs[i].id) {
               for (let j = 0; j < jobs[i].id.applicants.length; j++) {
                 if (jobs[i].id.applicants[j].id === props.user._id) {
-                  setApplications((applications) => [
-                    ...applications,
-                    {
-                      userId: props.user._id,
-                      title: jobs[i].id.title,
-                      dateOfJoining: jobs[i].id.applicants[j].dateOfJoining,
-                      salary: jobs[i].id.salary,
-                      rating: jobs[i].id.applicants[j].rating,
-                      id: jobs[i].id,
-                      status: jobs[i].id.applicants[j].status,
-                    },
-                  ]);
+                  applicationsL.push({
+                    userId: props.user._id,
+                    title: jobs[i].id.title,
+                    recruiterName: jobs[i].id.recruiterName,
+                    dateOfJoining: jobs[i].id.applicants[j].dateOfJoining,
+                    salary: jobs[i].id.salary,
+                    rating: jobs[i].id.applicants[j].rating,
+                    id: jobs[i].id,
+                    status: jobs[i].id.applicants[j].status,
+                  });
                 }
               }
             }
           }
+          console.log(applicationsL);
+          setApplications(applicationsL);
         }
       })
       .catch((err) => {

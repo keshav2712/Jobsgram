@@ -50,37 +50,50 @@ export default function JobListings(props) {
         >
           <b>Jobs Listed</b> by you
         </h4>
-        {jobs.map((job, i, jobs) => {
-          if (i % 2 == 0) {
-            return (
-              <div
-                className="row"
-                key={jobs[i]._id}
-                style={{ display: "flex" }}
-              >
-                <div className="col s6">
-                  <Job
-                    user={user}
-                    job={jobs[i]}
-                    history={props.history}
-                    onDeleted={onDeleted}
-                  />
-                </div>
-
-                <div className="col s6">
-                  {jobs[i + 1] ? (
+        {jobs
+          .filter((job) => {
+            console.log(job);
+            let positionsLeft = job.positions;
+            if (job.applicants) {
+              job.applicants.forEach((applicant) => {
+                if (applicant.status === "accepted") {
+                  positionsLeft--;
+                }
+              });
+            }
+            return positionsLeft;
+          })
+          .map((job, i, jobs) => {
+            if (i % 2 == 0) {
+              return (
+                <div
+                  className="row"
+                  key={jobs[i]._id}
+                  style={{ display: "flex" }}
+                >
+                  <div className="col s6">
                     <Job
                       user={user}
-                      job={jobs[i + 1]}
+                      job={jobs[i]}
                       history={props.history}
                       onDeleted={onDeleted}
                     />
-                  ) : null}
+                  </div>
+
+                  <div className="col s6">
+                    {jobs[i + 1] ? (
+                      <Job
+                        user={user}
+                        job={jobs[i + 1]}
+                        history={props.history}
+                        onDeleted={onDeleted}
+                      />
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            );
-          }
-        })}
+              );
+            }
+          })}
       </div>
     </>
   );

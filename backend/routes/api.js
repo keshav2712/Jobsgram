@@ -272,6 +272,19 @@ router.post("/jobs/update", (req, res) => {
   });
 });
 
+router.post("/jobs/getOne", (req, res) => {
+  Job.findOne({ _id: req.body._id })
+    .populate({
+      path: "applicants.id",
+      model: "applicants",
+    })
+    .exec((err, job) => {
+      if (err) {
+        res.status(400).json(err);
+      } else res.status(200).json(job);
+    });
+});
+
 router.post("/jobs/addApplicant", (req, res) => {
   let count = 0;
   Job.findOne({ _id: req.body.id }).then((job) => {
@@ -324,11 +337,9 @@ router.post("/jobs/updateStatusAccept", (req, res) => {
     //iterating through all the jobs
     for (let i = 0; i < jobs.length; i++) {
       if (jobs[i].applicants) {
-        var count = 0;
         //iterating through all the applicants of every job
         for (let j = 0; j < jobs[i].applicants.length; j++) {
           //if the applicant is found
-          if (jobs[i].applicants[j].status == "accepted") count++;
           if (jobs[i].applicants[j].id == req.body.applicant.id) {
             //if the job is not the original job
             if (jobs[i]._id != req.body._id) {
@@ -353,26 +364,10 @@ router.post("/jobs/updateStatusAccept", (req, res) => {
                       applicant.jobsApplied[k].status = "rejected";
                     }
                   }
-                  applicant.save().catch((err) => console.log(err));
-                }
-              );
-            }
-          }
-        }
-        if (count >= jobs[i].positions) {
-          for (let j = 0; j < jobs[i].applicants.length; j++) {
-            if (jobs[i].applicants[j].status != "accepted") {
-              jobs[i].applicants[j].status = "rejected";
-              jobs[i].save().catch((err) => res.status(400).json(error));
-              Applicant.findOne({ _id: req.body.applicant.id }).then(
-                (applicant) => {
-                  //finding the job in the applicant
-                  for (let k = 0; k < applicant.jobsApplied.length; k++) {
-                    if (applicant.jobsApplied[k].id == req.body._id) {
-                      applicant.jobsApplied[k].status = "rejected";
-                    }
-                  }
-                  applicant.save().catch((err) => console.log(err));
+                  applicant
+                    .save()
+                    .then((applicant) => res.json(applicant))
+                    .catch((err) => console.log(err));
                 }
               );
             }
@@ -426,12 +421,65 @@ router.post("/jobs/saveRating", (req, res) => {
       }
       if (job.applicants[i].rating) rating += job.applicants[i].rating;
     }
-    job.rating = parseInt(rating);
+    job.rating = parseInt(rating) / job.applicants.length;
     job
       .save()
       .then((job) => res.json(job))
       .catch((err) => console.log(err));
   });
+});
+
+router.post("/jobs/checkPositions", (req, res) => {
+  Job.findOne({ _id: req.body._id })
+    .populate({
+      path: "applicants.id",
+      model: "applicants",
+    })
+    .exec((err, job) => {
+      if (err) {
+        res.status(400).json(err);
+      } else {
+        var count = 0,
+          flag = 0;
+        for (let i = 0; i < job.applicants.length; i++) {
+          if (job.applicants[i].status == "accepted") {
+            count++;
+          }
+          if (job.positions <= count) {
+            flag = 1;
+            break;
+          }
+        }
+        if (flag == 1) {
+          for (let i = 0; i < job.applicants.length; i++) {
+            if (job.applicants[i].status !== "accepted") {
+              job.applicants[i].status = "rejected";
+
+              Applicant.findOne({ _id: job.applicants[i].id }).then(
+                (applicant) => {
+                  for (let j = 0; j < applicant.jobsApplied.length; j++) {
+                    if (applicant.jobsApplied[j].id == req.body._id) {
+                      applicant.jobsApplied[j].status = "rejected";
+                      break;
+                    }
+                  }
+                  applicant.save().catch((err) => res.status(400).json(error));
+                  job
+                    .save()
+                    .then((job) => res.json(job))
+                    .catch((err) => res.status(400).json(error));
+                }
+              );
+            }
+          }
+        } else {
+          job
+            .save()
+            .then((job) => res.json(job))
+            .catch((err) => console.log(err));
+        }
+      }
+    });
 });
 
 module.exports = router;

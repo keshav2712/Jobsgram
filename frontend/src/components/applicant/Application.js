@@ -5,10 +5,8 @@ import axios from "axios";
 
 export default function Employee(props) {
   const application = props.application;
-  const [rating, setRating] = React.useState(props.application.rating);
-  const [hoverRating, setHoverRating] = React.useState(
-    props.application.rating
-  );
+  const [rating, setRating] = useState(props.application.rating);
+  const [hoverRating, setHoverRating] = useState(props.application.rating);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,10 +19,10 @@ export default function Employee(props) {
   }, []);
 
   const onMouseEnter = (index) => {
-    setHoverRating(index);
+    if (application.status === "accepted") setHoverRating(index);
   };
   const onMouseLeave = () => {
-    setHoverRating(0);
+    if (application.status === "accepted") setHoverRating(0);
   };
   const status = () => {
     if (application.status === "applied") return "APPLIED";
@@ -32,21 +30,29 @@ export default function Employee(props) {
     else if (application.status === "accepted") return "ACCEPTED";
     else return "REJECTED";
   };
+  const color = () => {
+    if (application.status === "applied") return "#5c74ec";
+    else if (application.status === "shortlisted") return "#ffe087";
+    else if (application.status === "accepted") return "#00ab66";
+    else return "#cf142b";
+  };
   const onSaveRating = (index) => {
-    const newRating = {
-      jobId: props.application.id._id,
-      id: props.application.userId,
-      rating: index,
-    };
-    axios
-      .post("api/jobs/saveRating", newRating)
-      .then((res) => {
-        console.log(res.data);
-        setRating(index);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (application.status === "accepted") {
+      const newRating = {
+        jobId: props.application.id._id,
+        id: props.application.userId,
+        rating: index,
+      };
+      axios
+        .post("api/jobs/saveRating", newRating)
+        .then((res) => {
+          console.log(res.data);
+          setRating(index);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   return (
     <div
@@ -61,13 +67,28 @@ export default function Employee(props) {
           >
             <span
               className="card-title left-align"
-              style={{ fontSize: "22px" }}
+              style={{ fontSize: "22px", marginBottom: "0" }}
             >
               <b>{application.title}</b>
-              <span style={{ fontSize: "14px", paddingLeft: "1rem" }}>
+              <span
+                className="white-text"
+                style={{
+                  fontSize: "14px",
+                  marginLeft: "2rem",
+                  padding: "0.3rem 0.3rem",
+                  borderRadius: "3px",
+                  backgroundColor: color(),
+                }}
+              >
                 {status()}
               </span>
             </span>
+            <p
+              className="left-align"
+              style={{ padding: "0.3rem 0", fontSize: "14px" }}
+            >
+              By {application.recruiterName}
+            </p>
             <p
               className="left-align"
               style={{ padding: "0.3rem 0", fontSize: "16px" }}

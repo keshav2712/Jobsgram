@@ -15,13 +15,8 @@ import DetailsR from "./components/auth/DetailsR";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 
-import ProfileA from "./components/tabs/ProfileA";
-import ProfileR from "./components/tabs/ProfileR";
-import JobListings from "./components/recruiter/JobListings";
-import MyEmployees from "./components/recruiter/MyEmployees";
 import Applications from "./components/recruiter/Applications";
 import EditJob from "./components/recruiter/EditJob";
-import MyApplication from "./components/applicant/MyApplication";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -46,12 +41,7 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/detailsa" component={DetailsA} />
             <Route exact path="/detailsr" component={DetailsR} />
-            <Route exact path="/profilea" component={ProfileA} />
-            <Route exact path="/profiler" component={ProfileR} />
-            <Route exact path="/myApplications" component={MyApplication} />
             <Route exact path="/applications" component={Applications} />
-            <Route exact path="/myEmployees" component={MyEmployees} />
-            <Route exact path="/jobListing" component={JobListings} />
             <Route exact path="/editJob" component={EditJob} />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />

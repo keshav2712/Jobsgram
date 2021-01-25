@@ -56,6 +56,10 @@ export default function AddJobs(props) {
       formIsValid = false;
       errors.applications = "No. of applications cant be negative";
     }
+    if (!job.applications.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors.applications = "Job applications can only be numnerical";
+    }
     if (job.positions === "") {
       formIsValid = false;
       errors.positions = "No. of positions is required";
@@ -67,6 +71,10 @@ export default function AddJobs(props) {
     if (job.positions < 0) {
       formIsValid = false;
       errors.positions = "No. of positions cant be negative";
+    }
+    if (!job.positions.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors.positions = "Job positions can only be numnerical";
     }
     if (parseInt(job.positions) > parseInt(job.applications)) {
       formIsValid = false;
@@ -84,6 +92,10 @@ export default function AddJobs(props) {
     if (job.salary === "") {
       formIsValid = false;
       errors.salary = "Job salary is required";
+    }
+    if (!job.salary.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors.salary = "Job salary can only be numnerical";
     }
     if (job.salary === "0") {
       formIsValid = false;
@@ -332,7 +344,7 @@ export default function AddJobs(props) {
                 </label>
               </fieldset>
             </div>
-            <span style={{ paddingLeft: "1rem" }} className="red-text">
+            <span style={{ paddingLeft: "15rem" }} className="red-text">
               {errors.typeOfJob}
             </span>
             <div className="col s10" style={{ paddingBottom: "1rem" }}>

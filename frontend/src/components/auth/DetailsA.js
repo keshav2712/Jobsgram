@@ -95,6 +95,10 @@ class DetailsA extends Component {
       }
     }
     //number
+    if (!this.state.number.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors["number"] = "Phone Number can only be numnerical";
+    }
     if (this.state.number === "") {
       formIsValid = false;
       errors["number"] = "Phone Number cannot be empty";

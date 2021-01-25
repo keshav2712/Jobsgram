@@ -109,6 +109,10 @@ export class ProfileA extends Component {
       }
     }
     //number
+    if (!this.state.number.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors["number"] = "Phone Number can only be numnerical";
+    }
     if (this.state.number === "") {
       formIsValid = false;
       errors["number"] = "Phone Number cannot be empty";
@@ -416,13 +420,13 @@ export class ProfileA extends Component {
                     className="col s11 offset-s1"
                     style={{ marginBottom: "1rem" }}
                   >
-                    {this.state.skills.map((skill) => (
-                      <>
+                    {this.state.skills.map((skill, index) => (
+                      <span key={index}>
                         <span
                           className="white-text"
                           style={{
                             backgroundColor: "#5c74ec",
-                            borderRadius: "10px",
+                            borderRadius: "3px",
                             margin: "2rem 0",
                             padding: "0.4rem",
                           }}
@@ -430,7 +434,7 @@ export class ProfileA extends Component {
                           {skill}
                         </span>
                         <span> </span>
-                      </>
+                      </span>
                     ))}
                   </div>
                   <div className="col s11 offset-s1">

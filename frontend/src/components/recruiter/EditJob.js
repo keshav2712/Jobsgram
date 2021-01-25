@@ -21,6 +21,10 @@ export default function EditJob(props) {
       formIsValid = false;
       errors.title = "Job title is required";
     }
+    if (!job.applications.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors.applications = "Job applications can only be numnerical";
+    }
     if (job.applications === "") {
       formIsValid = false;
       errors.applications = "No. of applications is required";
@@ -32,6 +36,10 @@ export default function EditJob(props) {
     if (job.applications < 0) {
       formIsValid = false;
       errors.applications = "No. of applications cant be negative";
+    }
+    if (!job.positions.toString().match(/^[0-9]+$/)) {
+      formIsValid = false;
+      errors.positions = "Job positions can only be numnerical";
     }
     if (job.positions === "") {
       formIsValid = false;

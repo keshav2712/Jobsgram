@@ -24,6 +24,8 @@ function StarIcon(props) {
 
 export default function Applicant(props) {
   const [status, setStatus] = useState(props.applicant.status);
+  const [disabled, setDisabled] = useState(false);
+
   const applicant = props.applicant.id;
   useEffect(() => {
     let isMounted = true;
@@ -33,10 +35,19 @@ export default function Applicant(props) {
         if (isMounted) {
           console.log(res.data);
           for (let i = 0; i < res.data.jobsApplied.length; i++) {
-            if (res.data.jobsApplied[i].status == "accepted") {
+            if (
+              res.data.jobsApplied[i].status === "accepted" &&
+              res.data.jobsApplied[i].id &&
+              res.data.jobsApplied[i].id._id !== props.job._id
+            ) {
+              console.log(
+                res.data.name,
+                res.data.jobsApplied[i],
+                props.job._id
+              );
               setStatus("rejected");
-              break;
-            } else if (res.data.jobsApplied[i].id == props.job._id) {
+            }
+            if (res.data.jobsApplied[i].id == props.job._id) {
               setStatus(res.data.jobsApplied[i].status);
             }
           }
@@ -96,7 +107,8 @@ export default function Applicant(props) {
         .catch((err) => {
           console.log(err);
         });
-    } else {
+    } else if (status === "shortlisted") {
+      setDisabled(true);
       const newJob = {
         _id: props.job._id,
         applicant: {
@@ -105,15 +117,9 @@ export default function Applicant(props) {
           dateOfJoining: new Date(),
         },
       };
-      axios
-        .post("api/jobs/updateStatusAccept", newJob)
-        .then((res) => {
-          console.log(res.data);
-          setStatus("accepted");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      props.checkPostions(newJob);
+      setStatus("accepted");
+      setDisabled(true);
     }
   };
   const colors = () => {
@@ -152,7 +158,8 @@ export default function Applicant(props) {
               </div>
             </span>
             <p className="left-align" style={sty}>
-              <b>Skills:</b> &nbsp;{printSkills(applicant.skills)}
+              <b>Skills:</b> &nbsp;
+              {applicant.skills.length ? printSkills(applicant.skills) : null}
             </p>
             <p className="left-align" style={sty}>
               <b>Date of Application:</b> &nbsp;
@@ -179,6 +186,7 @@ export default function Applicant(props) {
           <button
             className="waves-effect waves-light btn-large button"
             onClick={onClick}
+            disabled={disabled}
             style={{ margin: "auto", backgroundColor: colors() }}
           >
             {status === "applied"
