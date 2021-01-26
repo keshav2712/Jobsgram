@@ -12,17 +12,21 @@ Job Portal for finding and listing job opportunity
 ```
 
 * Start the front end
+  *  Open a new terminal
 
 ```bash
-    cd ../frontend
+    cd frontend
     npm install
     npm start
 ```
 
 CAUTION : If the ports are already being used by some other processes, they must be killed before running the above script
-
+* If backend port is in use
 ```bash
     sudo fuser -k 5000/tcp
+```
+* If frontend port is in use
+``` 
     sudo fuser -k 3000/tcp
 ```
 

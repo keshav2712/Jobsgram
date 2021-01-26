@@ -45,7 +45,7 @@ function Job(props) {
     }
     var count = 0;
     for (let i = 0; i < job.applicants.length; i++) {
-      if (job.applicants[i].status === "accpeted") count++;
+      if (job.applicants[i].status === "accepted") count++;
       if (job.positions <= count) {
         setButtonValue("FULL");
       }
@@ -184,9 +184,9 @@ function Job(props) {
           >
             <div
               className="card-title left-align"
-              style={{ fontSize: "22px", marginBottom: "0" }}
+              style={{ fontSize: "24px", marginBottom: "0" }}
             >
-              <b>Job Title:</b> {job.title}
+              {job.title}
             </div>
             <p className="left-align" style={{ fontSize: "0.85rem" }}>
               By &nbsp;{job.recruiterName}
