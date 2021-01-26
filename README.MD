@@ -8,7 +8,7 @@ Job Portal for finding and listing job opportunity
 ```bash
     cd backend
     npm install
-    nodemon server start
+    npm start
 ```
 
 * Start the front end

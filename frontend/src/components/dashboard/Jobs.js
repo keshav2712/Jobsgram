@@ -168,6 +168,7 @@ function Jobs(props) {
           <p className="grey-text text-darken-3" style={sty}>
             Order
           </p>
+          <br/>
           <fieldset
             id="role"
             onChange={(e) => {
