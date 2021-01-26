@@ -36,14 +36,15 @@ Your App should be up and running on http://localhost:3000/
 
 * Supports two types of users - Applicants and Recruiters
 
-## Vendors 
+## Applicants 
 * View all job listings
 * Apply for Jobs
-* Rate Jobs
-* Upload Resume
+* Rate Jobs they are accepted into
+* Upload Resume and Profile Pic
 
 ## Customer
 * List out jobs
 * Select applicants
 * Rate employees
 * Delete/Edit Jobs
+* Auto send acceptance mail
