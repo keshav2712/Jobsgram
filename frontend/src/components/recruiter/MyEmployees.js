@@ -25,7 +25,7 @@ export default function MyEmployees(props) {
   useEffect(() => {
     let isMounted = true;
     axios
-      .post("api/recruiter", user)
+      .post("https://jobsgram.herokuapp.com/api/recruiter", user)
       .then((res) => {
         if (isMounted) {
           var jobs = res.data.jobsCreated;

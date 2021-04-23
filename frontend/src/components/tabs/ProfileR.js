@@ -23,7 +23,7 @@ export class ProfileR extends Component {
     const data = this.props.user;
     data.userId = data._id;
     axios
-      .post("/api/recruiter", data)
+      .post("https://jobsgram.herokuapp.com/api/recruiter", data)
       .then((res) =>
         this.setState({
           id: res.data._id,

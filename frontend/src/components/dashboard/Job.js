@@ -111,7 +111,7 @@ function Job(props) {
       };
 
       axios
-        .post("api/jobs/addApplicant", newJob)
+        .post("https://jobsgram.herokuapp.com/api/jobs/addApplicant", newJob)
         .then((res) => {
           console.log(res.data);
           if (res.data === "error") {

@@ -10,7 +10,7 @@ export default function JobListings(props) {
     let isMounted = true;
     if (props) {
       axios
-        .post("api/recruiter", user)
+        .post("https://jobsgram.herokuapp.com/api/recruiter", user)
         .then((res) => {
           if (isMounted) {
             setJobs(res.data.jobsCreated);
@@ -26,10 +26,10 @@ export default function JobListings(props) {
   }, [props]);
   const onDeleted = (deletej) => {
     axios
-      .post("api/jobs/delete", deletej)
+      .post("https://jobsgram.herokuapp.com/api/jobs/delete", deletej)
       .then((res) => {
         axios
-          .post("api/recruiter", user)
+          .post("https://jobsgram.herokuapp.com/api/recruiter", user)
           .then((res) => {
             setJobs(res.data.jobsCreated);
           })

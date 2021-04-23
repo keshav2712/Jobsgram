@@ -8,7 +8,7 @@ export default function MyApplication(props) {
   useEffect(() => {
     let isMounted = true;
     axios
-      .post("api/applicant", user)
+      .post("https://jobsgram.herokuapp.com/api/applicant", user)
       .then((res) => {
         if (isMounted) {
           console.log(res.data);

@@ -152,7 +152,7 @@ export default function AddJobs(props) {
         userId: props.user._id,
       };
       axios
-        .post("/api/jobs/add", newJob)
+        .post("https://jobsgram.herokuapp.com/api/jobs/add", newJob)
         .then((res) => {
           window.M.toast({ html: "Job Added!" }, 2000);
           setJob({

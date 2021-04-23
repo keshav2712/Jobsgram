@@ -84,7 +84,7 @@ export default function EditJob(props) {
         };
         if (disabled === false) {
           axios
-            .post("api/jobs/update", UpdatedJob)
+            .post("https://jobsgram.herokuapp.com/api/jobs/update", UpdatedJob)
             .then((res) => {
               window.M.toast({ html: "Job Details Edited!" }, 2000);
               props.history.push({

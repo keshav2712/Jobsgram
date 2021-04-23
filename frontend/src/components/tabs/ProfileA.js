@@ -51,7 +51,7 @@ export class ProfileA extends Component {
     data.userId = data._id;
     console.log(data);
     axios
-      .post("/api/applicant", data)
+      .post("https://jobsgram.herokuapp.com/api/applicant", data)
       .then((res) => {
         if (this._isMounted) {
           this.setState({

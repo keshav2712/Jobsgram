@@ -27,7 +27,7 @@ export default function Applications(props) {
     let isMounted = true;
     if (props) {
       axios
-        .post("api/jobs/getOne", job)
+        .post("https://jobsgram.herokuapp.com/api/jobs/getOne", job)
         .then((res) => {
           if (isMounted) {
             setApplicants(res.data.applicants);
@@ -44,10 +44,13 @@ export default function Applications(props) {
   const checkPostions = (newJob) => {
     setDisabled(true);
     axios
-      .post("api/jobs/updateStatusAccept", newJob)
+      .post(
+        "https://jobsgram.herokuapp.com/api/jobs/updateStatusAccept",
+        newJob
+      )
       .then((res) => {
         axios
-          .post("api/jobs/checkPositions", job)
+          .post("https://jobsgram.herokuapp.com/api/jobs/checkPositions", job)
           .then((res) => {
             setApplicants(res.data.applicants);
           })

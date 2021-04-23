@@ -38,7 +38,7 @@ function Jobs(props) {
     let isMounted = true;
 
     axios
-      .get("api/jobs")
+      .get("https://jobsgram.herokuapp.com/api/jobs")
       .then((res) => {
         if (isMounted) {
           setJobs(res.data);
@@ -168,7 +168,7 @@ function Jobs(props) {
           <p className="grey-text text-darken-3" style={sty}>
             Order
           </p>
-          <br/>
+          <br />
           <fieldset
             id="role"
             onChange={(e) => {

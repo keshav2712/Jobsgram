@@ -25,7 +25,7 @@ class Dashboard extends Component {
     const { user } = this.props.auth.user;
     if (user.role === "applicants") {
       axios
-        .post("/api/applicant", user)
+        .post("https://jobsgram.herokuapp.com/api/applicant", user)
         .then((res) => {
           if (this._isMounted) {
             this.setState({ userData: res.data });
@@ -37,7 +37,7 @@ class Dashboard extends Component {
         .catch((err) => console.log(err));
     } else {
       axios
-        .post("/api/recruiter", user)
+        .post("https://jobsgram.herokuapp.com/api/recruiter", user)
         .then((res) => {
           if (this._isMounted) {
             this.setState({ userData: res.data });

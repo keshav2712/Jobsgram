@@ -29,7 +29,10 @@ export default function Employee(props) {
       rating: index,
     };
     axios
-      .post("api/applicant/saveRating", newRating)
+      .post(
+        "https://jobsgram.herokuapp.com/api/applicant/saveRating",
+        newRating
+      )
       .then((res) => {
         setRating(index);
       })

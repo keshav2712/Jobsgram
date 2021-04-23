@@ -30,7 +30,7 @@ export default function Applicant(props) {
   useEffect(() => {
     let isMounted = true;
     axios
-      .post("api/applicant", applicant)
+      .post("https://jobsgram.herokuapp.com/api/applicant", applicant)
       .then((res) => {
         if (isMounted) {
           for (let i = 0; i < res.data.jobsApplied.length; i++) {
@@ -73,7 +73,7 @@ export default function Applicant(props) {
         },
       };
       axios
-        .post("api/jobs/updateStatus", newJob)
+        .post("https://jobsgram.herokuapp.com/api/jobs/updateStatus", newJob)
         .then((res) => {
           setStatus("rejected");
         })
@@ -92,7 +92,7 @@ export default function Applicant(props) {
         },
       };
       axios
-        .post("api/jobs/updateStatus", newJob)
+        .post("https://jobsgram.herokuapp.com/api/jobs/updateStatus", newJob)
         .then((res) => {
           console.log(res.data);
           setStatus("shortlisted");
