@@ -71,7 +71,7 @@ export class ProfileA extends Component {
               user: res.data._id,
             };
             axios
-              .post("http://localhost:5000/download", data2, {
+              .post("https://jobsgram.herokuapp.com/download", data2, {
                 responseType: "blob",
               })
               .then((response) => {
@@ -323,7 +323,9 @@ export class ProfileA extends Component {
       user: this.state.id,
     };
     axios
-      .post("http://localhost:5000/download", data, { responseType: "blob" })
+      .post("https://jobsgram.herokuapp.com/download", data, {
+        responseType: "blob",
+      })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -356,7 +358,7 @@ export class ProfileA extends Component {
     data.append("user", this.state.id);
     data.append("type", e.target.name);
     axios
-      .post("http://localhost:5000/upload", data, {
+      .post("https://jobsgram.herokuapp.com/upload", data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
